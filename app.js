@@ -25,6 +25,9 @@ const kpiData = [
   ["LATEST DAILY", money(D.summary.latestDaily), "7/1 前日比 +9.3%", "⭐"]
 ];
 document.querySelector('#kpis').innerHTML = kpiData.map(x => `<div class="kpi"><span class="toy">${x[3]}</span><label>${x[0]}</label><strong>${x[1]}</strong><span>${x[2]}</span></div>`).join('');
+const J = D.japanFlash;
+const numberJa = value => Number(value).toLocaleString('ja-JP');
+document.querySelector('#japan-flash').innerHTML = `<div class="japan-flash-lead"><div><span class="flash-live">● 超速報</span><b>${J.date} 初日・${J.updatedAt}更新</b></div><strong>参考興収換算 約¥${J.grossEstimateYen.base.toFixed(1)}億</strong><small>推計レンジ ¥${J.grossEstimateYen.low.toFixed(1)}〜¥${J.grossEstimateYen.high.toFixed(1)}億</small></div><div class="japan-flash-stats"><div><small>取得館販売数</small><strong>${numberJa(J.trackedSales)}</strong><span>チケット販売速報</span></div><div><small>デイリー順位</small><strong>${J.rank}位</strong><span>全作品中</span></div><div><small>座席・消化率</small><strong>${numberJa(J.seats)}</strong><span>${J.seatProgress.toFixed(1)}%消化</span></div><div><small>参考取得館率</small><strong>${J.referenceCoverage.toFixed(1)}%</strong><span>${J.nextDayTrackedTheaters}/${J.nextDayAllTheaters}館（翌日）</span></div></div><p class="japan-flash-note"><b>公式値ではありません。</b>${J.method} 正式発表までは世界累計に加算しません。</p>`;
 const billion = v => `$${(v / 1000).toFixed(2)}B`;
 document.querySelector('#forecast-card').innerHTML = `<div class="forecast-layout"><div class="forecast-main"><small>中心見込み</small><strong>${billion(D.forecast.base)}</strong><span>${D.forecast.confidence}・モデル推定</span></div><div class="forecast-range"><div class="forecast-labels"><span>下限 ${billion(D.forecast.low)}</span><span>上限 ${billion(D.forecast.high)}</span></div><div class="forecast-track"><i class="forecast-marker"></i></div><div class="forecast-basis">${D.forecast.basis}</div></div></div>`;
 
@@ -41,11 +44,15 @@ document.querySelector('#daily-table').innerHTML = `<thead><tr><th>日付</th><t
 document.querySelector('#weekends').innerHTML = D.weekends.map((x,i) => `<div class="weekend ${i === 1 ? 'current' : ''}"><small>WEEK ${x.week}</small><strong>${money(x.gross)}</strong><div>${x.change == null ? '前週比 —' : `前週比 ${delta(x.change)}`}</div><div class="muted">終了時累計 ${money(x.cumulative)}</div></div>`).join('');
 document.querySelector('#compare-table').innerHTML = `<thead><tr><th>作品</th><th>Day 14累計</th><th>TS5との差</th><th>TS5比</th><th>順位</th></tr></thead><tbody>${D.comparisons.map(x => `<tr class="${x.current ? 'current' : ''}"><td>${x.current?'★ ':''}${x.title}</td><td class="num">${money(x.cumulative)}</td><td class="num">${diff(x.difference)}</td><td class="num">${x.index.toFixed(1)}%</td><td class="num">${x.rank}</td></tr>`).join('')}</tbody>`;
 document.querySelector('#weekend-compare-table').innerHTML = `<thead><tr><th>作品</th><th>第2週末</th><th>前週比</th><th>TS5との差</th></tr></thead><tbody>${D.weekendComparisons.map(x => `<tr class="${x.current ? 'current' : ''}"><td>${x.current?'★ ':''}${x.title}</td><td class="num">${money(x.gross)}</td><td class="num">${delta(x.change)}</td><td class="num">${diff(x.difference)}</td></tr>`).join('')}</tbody>`;
-document.querySelector('#market-grid').innerHTML = D.markets.map(x => `<div class="market ${x.name === '日本' ? 'jp' : ''}"><div class="flag">${x.flag}</div><h3>${x.name}</h3><strong>${money(x.gross)}</strong><footer>${x.status} ${x.share == null ? '' : `・世界比 ${x.share.toFixed(1)}%`}</footer></div>`).join('');
+document.querySelector('#market-grid').innerHTML = D.markets.map(x => { const isJapan=x.name==='日本'; return `<div class="market ${isJapan?'jp':''}"><div class="flag">${x.flag}</div><h3>${x.name}${isJapan?'<span class="flash-badge">超速報</span>':''}</h3><strong>${isJapan?`推計 約¥${J.grossEstimateYen.base.toFixed(1)}億`:money(x.gross)}</strong><footer>${isJapan?`販売 ${numberJa(J.trackedSales)}・公式未公表`:x.status} ${x.share == null ? '' : `・世界比 ${x.share.toFixed(1)}%`}</footer></div>`; }).join('');
 const marketSelect = document.querySelector('#market-select');
 marketSelect.innerHTML = D.markets.map((x,i) => `<option value="${i}">${x.flag} ${x.name}</option>`).join('');
 const renderMarketTrend = index => {
   const x = D.markets[index];
+  if (x.name === '日本') {
+    document.querySelector('#market-trend').innerHTML = `<div class="jp-trend-summary"><span class="flash-live">● 超速報</span><strong>販売 ${numberJa(J.trackedSales)}</strong><b>参考興収換算 約¥${J.grossEstimateYen.base.toFixed(1)}億</b><small>公式興収の公表後に正式値へ差し替えます</small></div>`;
+    return;
+  }
   if (x.gross == null || x.growth == null) {
     document.querySelector('#market-trend').innerHTML = `<div class="empty-market"><strong>${x.flag} ${x.name}</strong><span>${x.status} — 興収公表後に推移を表示します</span></div>`;
     return;
@@ -64,6 +71,25 @@ const renderMarketPeers = index => {
 marketSelect.addEventListener('change', e => { const index=Number(e.target.value); renderMarketTrend(index); renderMarketPeers(index); });
 renderMarketTrend(0);
 renderMarketPeers(0);
+
+const renderMusicChart = (target, item, accent) => {
+  const width = 520, height = 260, left = 44, right = 28, top = 24, bottom = 48;
+  const points = item.points || [];
+  const maxRank = Math.max(5, ...points.map(p => p.rank || 1));
+  const plotW = width-left-right, plotH = height-top-bottom;
+  const x = i => points.length < 2 ? left + plotW/2 : left + plotW*i/(points.length-1);
+  const y = rank => top + (rank-1)/(maxRank-1)*plotH;
+  const path = points.map((p,i) => `${i?'L':'M'}${x(i).toFixed(1)},${y(p.rank).toFixed(1)}`).join(' ');
+  const grid = Array.from({length:maxRank},(_,i)=>i+1).map(rank => `<g><line x1="${left}" y1="${y(rank)}" x2="${width-right}" y2="${y(rank)}"/><text x="${left-10}" y="${y(rank)+4}" text-anchor="end">#${rank}</text></g>`).join('');
+  const labels = points.map((p,i)=>`<text class="music-x-label" x="${x(i)}" y="${height-18}" text-anchor="middle">${p.date}</text>`).join('');
+  const marks = points.map((p,i)=>`<g><circle cx="${x(i)}" cy="${y(p.rank)}" r="6" fill="${accent}"/><text class="music-rank-label" x="${x(i)}" y="${y(p.rank)-12}" text-anchor="middle">#${p.rank}</text></g>`).join('');
+  const move = points.length > 1 ? item.latest-points[points.length-2].rank : null;
+  const moveText = move == null ? '初登場' : move === 0 ? '前週同順位' : move > 0 ? `前週から ${move}位下降` : `前週から ${Math.abs(move)}位上昇`;
+  document.querySelector(target).innerHTML = `<div class="music-card-head"><div><small>${item.chart}</small><h3>${item.title}</h3><span>${item.artist}</span></div><div class="music-latest"><small>最新</small><strong>#${item.latest}</strong></div></div><div class="music-stats"><span>最高 <b>#${item.peak}</b></span><span>${moveText}</span></div><svg class="music-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${item.title}の${item.chart}順位推移"><g class="music-gridlines">${grid}${labels}</g><path class="music-line" d="${path}" stroke="${accent}"/>${marks}</svg><p>${item.note}</p>`;
+};
+renderMusicChart('#song-chart', D.musicCharts.song, '#e4322b');
+renderMusicChart('#soundtrack-chart', D.musicCharts.soundtrack, '#1676c3');
+document.querySelector('#music-note').textContent = `${D.musicCharts.updatedThrough}。異なるチャートの順位は直接比較せず、各チャート内の週次推移として表示します。`;
 
 const renderTrajectory = () => {
   const T = D.trajectory;
