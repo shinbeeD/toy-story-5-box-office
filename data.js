@@ -1,7 +1,7 @@
 window.BOX_OFFICE_DATA = {
-  updatedAt: "2026-07-04 06:00 JST",
+  updatedAt: "2026-07-04 06:45 JST",
   dataThrough: "2026-07-02",
-  headline: "世界累計 $626.56M。北米はMinions公開2日目も前日比9.3%増",
+  headline: "世界累計 $626.56M。日本初日は販売24.3万の超速報で好発進",
   summary: {
     worldwide: 626.563249,
     domestic: 335.348690,
@@ -11,18 +11,32 @@ window.BOX_OFFICE_DATA = {
     billionProgress: 62.7
   },
   forecast: {
-    low: 1050,
-    base: 1150,
-    high: 1250,
-    confidence: "暫定",
-    basis: "公開14日目までの北米推移、第2週末の下落率、海外比率、日本公開、独立記念日週末と直接競合を反映した分析レンジ。公式予測ではありません。"
+    low: 1100,
+    base: 1200,
+    high: 1300,
+    confidence: "暫定・上方修正",
+    basis: "公開14日目までの北米推移、Minions公開2日目でも前日比9.3%増・前週比31.6%減にとどまった木曜実績、第2週末、海外比率を反映。日本初日は販売速報のみで公式興収が未公表のため織り込まず、公式予測ではありません。"
+  },
+  japanFlash: {
+    date: "2026/07/03",
+    updatedAt: "2026/07/03 23:49",
+    rank: 1,
+    trackedSales: 242760,
+    seats: 1009186,
+    seatProgress: 98.1,
+    nextDayTrackedTheaters: 257,
+    nextDayAllTheaters: 387,
+    referenceCoverage: 66.4,
+    grossEstimateYen: { low: 4.8, base: 5.7, high: 6.5 },
+    status: "集計対象館の販売速報・公式興収未公表",
+    method: "販売数を翌日の取得館率66.4%と一般的な平均鑑賞単価で拡張した参考レンジ。取得館率と販売構成が一致しないため幅を持たせており、配給発表の興行収入ではありません。"
   },
   trajectory: {
     labels: ["Day 3", "Day 7", "Day 10", "Day 14", "Day 17", "Day 24", "最終"],
     unit: "北米累計（$M）",
     series: [
       { title: "トイ・ストーリー5", color: "#e4322b", values: [159.677837, 227.241642, 298.070670, 335.348690, null, null, null], current: true },
-      { title: "TS5 推移イメージ", color: "#f0b821", values: [null, null, null, 335.348690, 370, 425, 520], projected: true },
+      { title: "TS5 推移イメージ", color: "#f0b821", values: [null, null, null, 335.348690, 370, 430, 525], projected: true },
       { title: "インサイド・ヘッド2", color: "#7357c7", values: [154.201673, 255.183116, 356.393666, 411.906043, 469.426251, 534.138158, 652.980194] },
       { title: "インクレディブル・ファミリー", color: "#1676c3", values: [182.687905, 269.446690, 349.794341, 394.183514, 440.601275, 503.767837, 608.581744] },
       { title: "アナと雪の女王2", color: "#53a7c8", values: [130.263358, 202.867358, 288.845131, 302.924901, 338.090515, 366.433020, 477.373578] },
@@ -82,7 +96,7 @@ window.BOX_OFFICE_DATA = {
     { name: "ブラジル", flag: "🇧🇷", gross: 12.640, growth: 6.101, share: 2.0, status: "公開中" },
     { name: "オーストラリア", flag: "🇦🇺", gross: 12.614, growth: 5.770, share: 2.0, status: "公開中" },
     { name: "韓国", flag: "🇰🇷", gross: 10.889, growth: 4.953, share: 1.7, status: "公開中" },
-    { name: "日本", flag: "🇯🇵", gross: null, growth: null, share: null, status: "公開中・初日未公表" }
+    { name: "日本", flag: "🇯🇵", gross: null, growth: null, share: null, status: "初日超速報・公式興収未公表" }
   ],
   marketOpeningComparisons: {
     "メキシコ": [
@@ -162,7 +176,7 @@ window.BOX_OFFICE_DATA = {
     "第2週の北米興収は$108.11Mで第1週比52.4%減。第2週末の55.6%減と合わせ、初動規模に対する脚は標準的。",
     "7/2木曜は前日比9.3%増、前週同曜日比31.6%減。Minions公開2日目にもかかわらず水曜から反発し、家族層競合下では堅調な曜日推移。",
     "同日比較には感謝祭週のアナ雪2、独立記念日当日のTS4、感謝祭公開のズートピア2など祝日・公開曜日差がある。TS5も7/4が土曜のため通常週末と単純比較できない。",
-    "日本は7/3公開済み。6:00 JST時点で公式・業界集計の初日興収と公開週末値は未公表のため、海外累計や公開週末比較には加算していない。"
+    "日本初日は取得館販売数242,760でデイリー1位。参考興収換算は約4.8〜6.5億円（中心5.7億円）だが、公式興収ではないため世界累計には未加算。"
   ],
   competition: {
     current: {
@@ -178,7 +192,34 @@ window.BOX_OFFICE_DATA = {
       impact: "事実: TheWrapはMinionsを5日間$65M以上、TS5を約$40M、Deadline系報道はTS5を$35Mとする。モアナの追跡値には更新時刻差がある。分析: 2週連続の家族大作でTS5は客層重複と上映枠縮小が続く可能性が高い。"
     }
   },
-  outlook: "北米第3週末は業界予測に沿う$35M〜$40Mを暫定レンジとする。木曜の前日比増と祝日需要が上振れ条件、Minionsとの家族層競合、450館減、7/4が土曜で屋外行事が重なる点が下振れ条件。最終世界興収レンジは日本初動と海外更新待ちで据え置く。",
+  musicCharts: {
+    updatedThrough: "2026-07-04付チャート",
+    song: {
+      title: "I Knew It, I Knew You",
+      artist: "Taylor Swift",
+      chart: "Billboard Hot 100（米国）",
+      peak: 1,
+      latest: 2,
+      points: [
+        { date: "6/20", rank: 1 },
+        { date: "6/27", rank: 1 },
+        { date: "7/4", rank: 2 }
+      ],
+      note: "初登場から2週連続1位。3週目は2位で、週間純売上は41,000。"
+    },
+    soundtrack: {
+      title: "Toy Story 5 – Original Soundtrack",
+      artist: "Randy Newman / Original Soundtrack",
+      chart: "Official Classical Albums（英国）",
+      peak: 3,
+      latest: 3,
+      points: [
+        { date: "7/2", rank: 3 }
+      ],
+      note: "初登場3位。Official Album Downloadsでは初登場99位。Billboard 200は確認できた公表値がなく未掲載。"
+    }
+  },
+  outlook: "北米第3週末は業界予測に沿う$35M〜$40M、最終世界興収は$1.10B〜$1.30B（中心$1.20B）を暫定レンジとする。日本初日の販売速報は好発進だが、世界累計への反映は配給発表または業界公表の正式興収を待つ。",
   sources: [
     { name: "The Numbers", url: "https://www.the-numbers.com/movie/Toy-Story-5-%282026%29" },
     { name: "Box Office Mojo", url: "https://www.boxofficemojo.com/title/tt29355505/" },
@@ -189,6 +230,10 @@ window.BOX_OFFICE_DATA = {
     { name: "The Numbers Daily Chart 7/2", url: "https://www.the-numbers.com/box-office-chart/daily/2026/07/02" },
     { name: "Box Office Mojo Weekend 26", url: "https://www.boxofficemojo.com/weekend/2026W26/" },
     { name: "TheWrap 7/4 Weekend Tracking", url: "https://www.thewrap.com/industry-news/box-office/minions-and-monsters-box-office-tracking/" },
-    { name: "Disney Japan", url: "https://www.disney.co.jp/movie/toy5" }
+    { name: "Billboard Hot 100 (Billboard Canada)", url: "https://ca.billboard.com/charts/hot-100" },
+    { name: "Official Charts — Toy Story 5 Soundtrack", url: "https://www.officialcharts.com/albums/original-soundtrack-toy-story-5/" },
+    { name: "Toy Story 5 Soundtrack Release", url: "https://www.laughingplace.com/disney-entertainment/toy-story-5-soundtrack/" },
+    { name: "Disney Japan", url: "https://www.disney.co.jp/movie/toy5" },
+    { name: "興行収入を見守りたい！ 日本販売速報", url: "https://mimorin2014.com/?pc=" }
   ]
 };
