@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Toy Story 5 Box Office HQ</title>
-  <link rel="stylesheet" href="styles.css?v=20260703-10" />
+  <link rel="stylesheet" href="styles.css?v=20260704-2" />
   <style>.world-peer-series path{stroke-width:3!important}.world-trajectory-svg .current-world path{stroke-width:5!important}.endpoint-label{font-size:12px;font-weight:900;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}.world-slope-title{display:flex;justify-content:space-between;gap:12px;margin:18px 8px 8px;color:#123b69;font-size:12px}.world-slope-title span{color:#6f8295;font-size:11px}.world-peer-slope{background:linear-gradient(180deg,#fffaf0,#fff)}@media(max-width:520px){.world-slope-title{align-items:flex-start;flex-direction:column}}</style>
   <style>.market-peer-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:10px 12px;border-radius:10px;background:#eef8ff;color:#123b69}.market-peer-heading span{color:#6f8295;font-size:10px}.market-peer-heading b{font-size:13px}.mini-race-value{white-space:nowrap}</style>
 </head>
@@ -40,11 +40,16 @@
       <button data-tab="daily">DAILY</button>
       <button data-tab="compare">COMPARE</button>
       <button data-tab="markets">MARKETS</button>
+      <button data-tab="music">MUSIC</button>
       <button data-tab="sources">SOURCES</button>
     </nav>
 
     <section id="overview" class="tab-page active">
       <div class="kpi-grid" id="kpis"></div>
+      <article class="panel japan-flash-panel">
+        <div class="section-title"><span>🇯🇵</span><div><small>JAPAN ULTRA FLASH</small><h2>日本・初日 超速報</h2></div></div>
+        <div id="japan-flash"></div>
+      </article>
       <article class="panel forecast-panel">
         <div class="section-title"><span>🔮</span><div><small>FINAL WORLDWIDE FORECAST</small><h2>最終世界興行収入 見込み</h2></div></div>
         <div id="forecast-card"></div>
@@ -62,7 +67,7 @@
         </article>
       </div>
       <article class="panel">
-        <div class="section-title"><span>🏁</span><div><small>DAY 12 RACE</small><h2>公開後同日・北米累計比較</h2></div></div>
+        <div class="section-title"><span>🏁</span><div><small>DAY 14 RACE</small><h2>公開後同日・北米累計比較</h2></div></div>
         <div class="race-chart" id="race-chart"></div>
       </article>
     </section>
@@ -86,7 +91,7 @@
         <div class="table-wrap"><table id="worldwide-trend-table"></table></div>
         <p class="data-note">上段はTS5の公表値推移。下段は各作品の「公開週末」と「最終」の2点だけを結ぶ端点比較です。途中の線は日次興収や同日累計を表さず、線の交差から途中時点の優劣は判断できません。</p>
       </article>
-      <article class="panel"><div class="section-title"><span>🏆</span><div><small>DAY-MATCHED</small><h2>公開12日目 比較</h2></div></div><div class="table-wrap"><table id="compare-table"></table></div></article>
+      <article class="panel"><div class="section-title"><span>🏆</span><div><small>DAY-MATCHED</small><h2>公開14日目 比較</h2></div></div><div class="table-wrap"><table id="compare-table"></table></div></article>
       <article class="panel"><div class="section-title"><span>📉</span><div><small>WEEKEND-MATCHED</small><h2>第2週末 比較</h2></div></div><div class="table-wrap"><table id="weekend-compare-table"></table></div></article>
     </section>
 
@@ -107,13 +112,24 @@
       </div>
     </section>
 
+    <section id="music" class="tab-page">
+      <article class="panel music-panel">
+        <div class="section-title"><span>🎵</span><div><small>SONG &amp; SCORE CHART WATCH</small><h2>主題歌・サントラ チャート推移</h2></div></div>
+        <div class="music-grid">
+          <div class="music-card" id="song-chart"></div>
+          <div class="music-card" id="soundtrack-chart"></div>
+        </div>
+        <p class="data-note" id="music-note"></p>
+      </article>
+    </section>
+
     <section id="sources" class="tab-page">
       <article class="panel"><div class="section-title"><span>🔎</span><div><small>DOUBLE CHECKED</small><h2>情報源クロスチェック</h2></div></div><div class="table-wrap"><table id="checks-table"></table></div><div class="source-links" id="source-links"></div></article>
     </section>
   </main>
 
   <footer><span>★</span> BOX OFFICE HQ — BUILT FOR THE TOY BOX <span>★</span></footer>
-  <script src="data.js?v=20260703-10"></script>
-  <script src="app.js?v=20260703-10"></script>
+  <script src="data.js?v=20260704-2"></script>
+  <script src="app.js?v=20260704-2"></script>
 </body>
 </html>
