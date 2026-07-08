@@ -1,5 +1,5 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-07-09 08:00 JST",
+  "updatedAt": "2026-07-09 08:06 JST",
   "dataThrough": "2026-07-07",
   "headline": "世界累計 $776.01M。日本累計$14.56Mも反映、北米は公開19日目で$376.88M",
   "summary": {
@@ -7,7 +7,7 @@ window.BOX_OFFICE_DATA = {
     "domestic": 376.883879,
     "international": 399.128094,
     "latestDaily": 6.685582,
-    "worldDelta": 0,
+    "worldDelta": 149.451973,
     "billionProgress": 77.6
   },
   "forecast": {
@@ -240,7 +240,7 @@ window.BOX_OFFICE_DATA = {
       "domestic": 376.883879,
       "international": 399.128094,
       "worldwide": 776.011973,
-      "increase": 0,
+      "increase": 149.451973,
       "status": "The Numbers更新値",
       "latest": true
     }
