@@ -4,6 +4,151 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Toy Story 5 Box Office HQ</title>
+  <link rel="stylesheet" href="styles.css?v=20260709-6" />
+  <style>.world-peer-series path{stroke-width:3!important}.world-trajectory-svg .current-world path{stroke-width:5!important}.endpoint-label{font-size:12px;font-weight:900;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}.world-slope-title{display:flex;justify-content:space-between;gap:12px;margin:18px 8px 8px;color:#123b69;font-size:12px}.world-slope-title span{color:#6f8295;font-size:11px}.world-peer-slope{background:linear-gradient(180deg,#fffaf0,#fff)}@media(max-width:520px){.world-slope-title{align-items:flex-start;flex-direction:column}}</style>
+  <style>.market-peer-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:10px 12px;border-radius:10px;background:#eef8ff;color:#123b69}.market-peer-heading span{color:#6f8295;font-size:10px}.market-peer-heading b{font-size:13px}.mini-race-value{white-space:nowrap}</style>
+</head>
+<body>
+  <div class="sky-decor" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-block">TOY</div>
+      <div class="brand-word">STORY <b>5</b></div>
+      <span class="brand-sub">BOX OFFICE HQ</span>
+    </div>
+    <div class="live-pill"><span></span> DAILY TRACKER</div>
+  </header>
+
+  <main>
+    <section class="hero panel">
+      <div class="hero-copy">
+        <div class="eyebrow">TO INFINITY AND BEYOND THE BOX OFFICE</div>
+        <h1 id="headline"></h1>
+        <p>世界の劇場をめぐる興行収入アドベンチャー。毎朝6:00更新。</p>
+        <div class="updated" id="updated"></div>
+      </div>
+      <div class="billion-card">
+        <div class="star">★</div>
+        <div><small>$1 BILLION MISSION</small><strong id="progress-label"></strong></div>
+        <div class="progress"><span id="progress-bar"></span></div>
+        <em>無限の彼方へ、あと少し！</em>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="ダッシュボード表示">
+      <button class="active" data-tab="overview">OVERVIEW</button>
+      <button data-tab="daily">DAILY</button>
+      <button data-tab="compare">COMPARE</button>
+      <button data-tab="markets">MARKETS</button>
+      <button data-tab="music">MUSIC</button>
+      <button data-tab="sources">SOURCES</button>
+    </nav>
+
+    <section id="overview" class="tab-page active">
+      <div class="kpi-grid" id="kpis"></div>
+      <article class="panel japan-flash-panel">
+        <div class="section-title"><span>🇯🇵</span><div><small>JAPAN SAME-DAY ESTIMATE</small><h2>日本・当日推定興収</h2></div></div>
+        <div id="japan-flash"></div>
+      </article>
+      <article class="panel chart-panel japan-daily-panel">
+        <div class="section-title"><span>🍿</span><div><small>JAPAN DAILY ESTIMATE</small><h2>日本 日次興収（推定）</h2></div></div>
+        <div class="bar-chart japan-bar-chart" id="japan-daily-chart"></div>
+        <p class="data-note">興行収入を見守りたい！の販売速報から当日興収を推定したグラフです。北米の日次興収とは異なり公式興収ではないため、日本公式値が出るまでの参考推移として見ます。</p>
+      </article>
+      <article class="panel japan-trend-panel">
+        <div class="section-title"><span>📊</span><div><small>JAPAN ESTIMATE LOG</small><h2>公式発表前の日本・日別推定興収推移</h2></div></div>
+        <div class="table-wrap"><table id="japan-estimate-table"></table></div>
+        <p class="data-note">販売速報から推定した当日興収の推移です。公式日本累計とは別扱いで、取得館率・時刻進捗・平均単価レンジにより後日ぶれる可能性があります。</p>
+      </article>
+      <article class="panel forecast-panel">
+        <div class="section-title"><span>🔮</span><div><small>FINAL WORLDWIDE FORECAST</small><h2>最終世界興行収入 見込み</h2></div></div>
+        <div id="forecast-card"></div>
+      </article>
+      <div class="content-grid">
+        <article class="panel chart-panel">
+          <div class="section-title"><span class="rocket">🚀</span><div><small>LAST 7 DAYS</small><h2>北米 日次興収</h2></div></div>
+          <div class="bar-chart" id="daily-chart"></div>
+        </article>
+        <article class="panel mission-panel">
+          <div class="section-title"><span>🤠</span><div><small>MISSION CONTROL</small><h2>今日の注目ポイント</h2></div></div>
+          <ul id="insights"></ul>
+          <div class="competition-context" id="competition-context"></div>
+          <div class="outlook"><b>🔭 短期見通し</b><span id="outlook"></span></div>
+        </article>
+      </div>
+      <article class="panel">
+        <div class="section-title"><span>🏁</span><div><small>DAY 14 RACE</small><h2>公開後同日・北米累計比較</h2></div></div>
+        <div class="race-chart" id="race-chart"></div>
+      </article>
+    </section>
+
+    <section id="daily" class="tab-page">
+      <article class="panel"><div class="section-title"><span>📅</span><div><small>DAILY LOG</small><h2>直近の日次推移</h2></div></div><div class="daily-guide"><b>1週間前比とは？</b><span>同じ曜日の日次興収との比較です。例：6/26なら6/19と比較。各％の下に、比較元の日付と金額を表示します。</span></div><div class="table-wrap"><table id="daily-table"></table></div></article>
+      <article class="panel"><div class="section-title"><span>🎬</span><div><small>WEEKEND RUN</small><h2>週末推移</h2></div></div><div class="weekend-cards" id="weekends"></div></article>
+    </section>
+
+    <section id="compare" class="tab-page">
+      <article class="panel trajectory-panel">
+        <div class="section-title"><span>🛸</span><div><small>BOX OFFICE FLIGHT PATH</small><h2>現状比較と、この先の推移イメージ</h2></div></div>
+        <div id="trajectory-chart"></div>
+        <p class="data-note">全作品の実線は北米実績。比較5作品は最終累計まで確定値、Day 17以降の黄色い破線だけがトイ・ストーリー5の分析イメージで、公式予測ではありません。</p>
+      </article>
+      <article class="panel worldwide-trend-panel">
+        <div class="section-title"><span>🌐</span><div><small>WORLDWIDE JOURNEY LOG</small><h2>世界累計の公表値推移</h2></div></div>
+        <div class="worldwide-summary" id="worldwide-summary"></div>
+        <div id="worldwide-trend-chart"></div>
+        <div id="world-peer-slope-chart"></div>
+        <div class="table-wrap"><table id="worldwide-trend-table"></table></div>
+        <p class="data-note">上段はTS5の公表値推移。下段は各作品の「公開週末」と「最終」の2点だけを結ぶ端点比較です。途中の線は日次興収や同日累計を表さず、線の交差から途中時点の優劣は判断できません。</p>
+      </article>
+      <article class="panel"><div class="section-title"><span>🏆</span><div><small>DAY-MATCHED</small><h2 id="day-match-title">公開後同日 比較</h2></div></div><div class="table-wrap"><table id="compare-table"></table></div></article>
+      <article class="panel"><div class="section-title"><span>📉</span><div><small>WEEKEND-MATCHED</small><h2 id="weekend-match-title">同週末 比較</h2></div></div><div class="table-wrap"><table id="weekend-compare-table"></table></div></article>
+    </section>
+
+    <section id="markets" class="tab-page">
+      <article class="panel"><div class="section-title"><span>🌍</span><div><small>GLOBAL TOUR</small><h2>主要国・地域</h2></div></div><div class="market-grid" id="market-grid"></div></article>
+      <div class="market-detail-grid">
+        <article class="panel">
+          <div class="section-title"><span>📈</span><div><small>MARKET TREND</small><h2>市場別 公表値推移</h2></div></div>
+          <label class="market-select-label">表示する市場<select id="market-select"></select></label>
+          <div class="snapshot-chart" id="market-trend"></div>
+          <p class="data-note">国別の日次値は公表頻度が異なります。推計で埋めず、入手できた公表スナップショットだけを表示します。</p>
+        </article>
+        <article class="panel">
+          <div class="section-title"><span>🧸</span><div><small>SAME-PERIOD BENCHMARK</small><h2>市場別 公開週末比較</h2></div></div>
+          <div class="mini-race" id="market-peer-chart"></div>
+          <p class="data-note">選択中の市場について、各作品の公開週末をUSD換算の公表値で比較します。公開曜日・祝日・為替・上映館数が異なるため、単純な人気順位ではなく初動規模の目安です。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="music" class="tab-page">
+      <article class="panel music-panel">
+        <div class="section-title"><span>🎵</span><div><small>SONG &amp; SCORE CHART WATCH</small><h2>主題歌・サントラ チャート推移</h2></div></div>
+        <div class="music-grid">
+          <div class="music-card" id="song-chart"></div>
+          <div class="music-card" id="soundtrack-chart"></div>
+        </div>
+        <p class="data-note" id="music-note"></p>
+      </article>
+    </section>
+
+    <section id="sources" class="tab-page">
+      <article class="panel"><div class="section-title"><span>🔎</span><div><small>DOUBLE CHECKED</small><h2>情報源クロスチェック</h2></div></div><div class="table-wrap"><table id="checks-table"></table></div><div class="source-links" id="source-links"></div></article>
+    </section>
+  </main>
+
+  <footer><span>★</span> BOX OFFICE HQ — BUILT FOR THE TOY BOX <span>★</span></footer>
+  <script src="data.js?v=20260709-6"></script>
+  <script src="app.js?v=20260709-6"></script>
+</body>
+</html>
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Toy Story 5 Box Office HQ</title>
   <link rel="stylesheet" href="styles.css?v=20260709-4" />
   <style>.world-peer-series path{stroke-width:3!important}.world-trajectory-svg .current-world path{stroke-width:5!important}.endpoint-label{font-size:12px;font-weight:900;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}.world-slope-title{display:flex;justify-content:space-between;gap:12px;margin:18px 8px 8px;color:#123b69;font-size:12px}.world-slope-title span{color:#6f8295;font-size:11px}.world-peer-slope{background:linear-gradient(180deg,#fffaf0,#fff)}@media(max-width:520px){.world-slope-title{align-items:flex-start;flex-direction:column}}</style>
   <style>.market-peer-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:10px 12px;border-radius:10px;background:#eef8ff;color:#123b69}.market-peer-heading span{color:#6f8295;font-size:10px}.market-peer-heading b{font-size:13px}.mini-race-value{white-space:nowrap}</style>
