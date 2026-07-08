@@ -284,8 +284,15 @@ const update = async () => {
   };
   const parsedMarkets = parseBOM(mojoText, adopted.worldwide);
   const japanMarket = parsedMarkets.find((market) => market.name === "日本");
+  const trendDate = shortDate(latest.isoDate);
+  const existingTrend = data.worldwideTrend ?? [];
+  const previousTrendRow = [...existingTrend].filter((row) => row.date !== trendDate).at(-1);
   const latestWorldDelta =
-    previousWorld == null ? null : round(adopted.worldwide - previousWorld, 6);
+    previousTrendRow?.worldwide != null
+      ? round(adopted.worldwide - previousTrendRow.worldwide, 6)
+      : previousWorld == null
+        ? null
+        : round(adopted.worldwide - previousWorld, 6);
 
   data.updatedAt = jstStamp();
   data.dataThrough = latest.isoDate;
@@ -320,8 +327,6 @@ const update = async () => {
     data.weekends.push({ week: data.weekends.length + 1, gross: null, change: null, cumulative: null, rank: null });
   }
 
-  const trendDate = shortDate(latest.isoDate);
-  const existingTrend = data.worldwideTrend ?? [];
   const nextTrend = {
     date: trendDate,
     label: "最新公表",
