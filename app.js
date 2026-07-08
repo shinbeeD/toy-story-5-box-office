@@ -42,8 +42,10 @@ document.querySelector('#race-chart').innerHTML = D.comparisons.map(x => `<div c
 
 document.querySelector('#daily-table').innerHTML = `<thead><tr><th>日付</th><th>その日の興収</th><th>前日からの増減</th><th>1週間前比<small>同じ曜日・比較元を併記</small></th><th>北米累計</th></tr></thead><tbody>${D.daily.map(x => `<tr><td>${x.date}</td><td class="num">${money(x.gross)}</td><td class="num">${delta(x.dod)}</td><td class="num">${weekDelta(x)}</td><td class="num">${money(x.cumulative)}</td></tr>`).join('')}</tbody>`;
 document.querySelector('#weekends').innerHTML = D.weekends.map((x,i) => `<div class="weekend ${i === 1 ? 'current' : ''}"><small>WEEK ${x.week}</small><strong>${money(x.gross)}</strong><div>${x.change == null ? '前週比 —' : `前週比 ${delta(x.change)}`}</div><div class="muted">終了時累計 ${money(x.cumulative)}</div></div>`).join('');
-document.querySelector('#compare-table').innerHTML = `<thead><tr><th>作品</th><th>Day 14累計</th><th>TS5との差</th><th>TS5比</th><th>順位</th></tr></thead><tbody>${D.comparisons.map(x => `<tr class="${x.current ? 'current' : ''}"><td>${x.current?'★ ':''}${x.title}</td><td class="num">${money(x.cumulative)}</td><td class="num">${diff(x.difference)}</td><td class="num">${x.index.toFixed(1)}%</td><td class="num">${x.rank}</td></tr>`).join('')}</tbody>`;
-document.querySelector('#weekend-compare-table').innerHTML = `<thead><tr><th>作品</th><th>第2週末</th><th>前週比</th><th>TS5との差</th></tr></thead><tbody>${D.weekendComparisons.map(x => `<tr class="${x.current ? 'current' : ''}"><td>${x.current?'★ ':''}${x.title}</td><td class="num">${money(x.gross)}</td><td class="num">${delta(x.change)}</td><td class="num">${diff(x.difference)}</td></tr>`).join('')}</tbody>`;
+document.querySelector('#compare-table').innerHTML = `<thead><tr><th>作品</th><th>Day ${D.dayMatchedDay || 14}累計</th><th>TS5との差</th><th>TS5比</th><th>順位</th></tr></thead><tbody>${D.comparisons.map(x => `<tr class="${x.current ? 'current' : ''}"><td>${x.current?'★ ':''}${x.title}</td><td class="num">${money(x.cumulative)}</td><td class="num">${diff(x.difference)}</td><td class="num">${x.index.toFixed(1)}%</td><td class="num">${x.rank}</td></tr>`).join('')}</tbody>`;
+document.querySelector('#weekend-compare-table').innerHTML = `<thead><tr><th>作品</th><th>第${D.weekendMatchedWeek || 2}週末</th><th>前週比</th><th>TS5との差</th></tr></thead><tbody>${D.weekendComparisons.map(x => `<tr class="${x.current ? 'current' : ''}"><td>${x.current?'★ ':''}${x.title}</td><td class="num">${money(x.gross)}</td><td class="num">${delta(x.change)}</td><td class="num">${diff(x.difference)}</td></tr>`).join('')}</tbody>`;
+document.querySelector('#day-match-title').textContent = `公開${D.dayMatchedDay || 14}日目 比較`;
+document.querySelector('#weekend-match-title').textContent = `第${D.weekendMatchedWeek || 2}週末 比較`;
 document.querySelector('#market-grid').innerHTML = D.markets.map(x => { const isJapan=x.name==='日本'; return `<div class="market ${isJapan?'jp':''}"><div class="flag">${x.flag}</div><h3>${x.name}${isJapan?'<span class="flash-badge">超速報</span>':''}</h3><strong>${isJapan?`推計 約¥${J.grossEstimateYen.base.toFixed(1)}億`:money(x.gross)}</strong><footer>${isJapan?`販売 ${numberJa(J.trackedSales)}・公式未公表`:x.status} ${x.share == null ? '' : `・世界比 ${x.share.toFixed(1)}%`}</footer></div>`; }).join('');
 const marketSelect = document.querySelector('#market-select');
 marketSelect.innerHTML = D.markets.map((x,i) => `<option value="${i}">${x.flag} ${x.name}</option>`).join('');
@@ -97,6 +99,8 @@ const renderTrajectory = () => {
   const plotW = width - left - right, plotH = height - top - bottom, yMax = 700;
   const x = i => left + (plotW * i / (T.labels.length - 1));
   const y = v => top + plotH - (v / yMax * plotH);
+  const currentSeries = T.series.find(s => s.current) || T.series[0];
+  const actualIndex = Math.max(0, currentSeries.values.reduce((last, value, index) => value == null ? last : index, 0));
   const pathFor = values => values.map((v, i) => v == null ? null : `${i && values[i-1] != null ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).filter(Boolean).join(' ');
   const grid = [0,100,200,300,400,500,600,700].map(v => `<g><line x1="${left}" y1="${y(v)}" x2="${width-right}" y2="${y(v)}"/><text x="${left-14}" y="${y(v)+4}" text-anchor="end">$${v}M</text></g>`).join('');
   const labels = T.labels.map((label,i) => `<text class="x-label" x="${x(i)}" y="${height-25}" text-anchor="middle">${label}</text>`).join('');
@@ -104,10 +108,11 @@ const renderTrajectory = () => {
     const dots = s.values.map((v,i) => v == null ? '' : `<circle cx="${x(i)}" cy="${y(v)}" r="${s.current ? 5 : 3.5}" fill="${s.color}"/>`).join('');
     return `<g class="trajectory-series ${s.projected?'projected':''}"><path d="${pathFor(s.values)}" stroke="${s.color}"/>${dots}</g>`;
   }).join('');
+  const finalIndex = T.labels.length - 1;
   const endpointOffsets = {"トイ・ストーリー4":-10,"ズートピア2":14};
-  const endpointLabels = T.series.filter(s => s.values[6] != null).map(s => `<text class="endpoint-label" x="${x(6)+10}" y="${y(s.values[6])+(endpointOffsets[s.title]||4)}" fill="${s.color}">$${s.values[6].toFixed(0)}M</text>`).join('');
+  const endpointLabels = T.series.filter(s => s.values[finalIndex] != null).map(s => `<text class="endpoint-label" x="${x(finalIndex)+10}" y="${y(s.values[finalIndex])+(endpointOffsets[s.title]||4)}" fill="${s.color}">$${s.values[finalIndex].toFixed(0)}M</text>`).join('');
   const legend = T.series.map(s => `<span class="legend-item"><i style="--legend:${s.color}" class="${s.projected?'dashed':''}"></i>${s.title}</span>`).join('');
-  document.querySelector('#trajectory-chart').innerHTML = `<div class="trajectory-meta"><b>${T.unit}</b><span>実線＝実績　破線＝推移イメージ</span></div><div class="trajectory-scroll"><svg class="trajectory-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="比較作品の北米累計推移とトイ・ストーリー5の予測"><g class="trajectory-grid">${grid}${labels}</g>${lines}${endpointLabels}<line class="actual-divider" x1="${x(3)}" y1="${top}" x2="${x(3)}" y2="${height-bottom}"/><text class="actual-label" x="${x(3)-10}" y="${top+14}" text-anchor="end">ここまで実績</text></svg></div><div class="trajectory-legend">${legend}</div>`;
+  document.querySelector('#trajectory-chart').innerHTML = `<div class="trajectory-meta"><b>${T.unit}</b><span>実線＝実績　破線＝推移イメージ</span></div><div class="trajectory-scroll"><svg class="trajectory-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="比較作品の北米累計推移とトイ・ストーリー5の予測"><g class="trajectory-grid">${grid}${labels}</g>${lines}${endpointLabels}<line class="actual-divider" x1="${x(actualIndex)}" y1="${top}" x2="${x(actualIndex)}" y2="${height-bottom}"/><text class="actual-label" x="${x(actualIndex)-10}" y="${top+14}" text-anchor="end">ここまで実績</text></svg></div><div class="trajectory-legend">${legend}</div>`;
 };
 renderTrajectory();
 const worldTrend = D.worldwideTrend;
