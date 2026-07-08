@@ -155,18 +155,21 @@ const parseWeekends = (text) => {
 };
 
 const parseBOM = (text, worldwide) => {
-  const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
-  const countries = new Map();
-  const re = /^(.+?)\s+([A-Z][a-z]{2}\s+\d{1,2},\s+20\d{2})\s*(?:\$([\d,]+)|–|-)?\s*\$([\d,]+)$/;
-  for (const line of lines) {
-    const match = line.match(re);
-    if (!match) continue;
-    countries.set(match[1], {
-      opening: match[3] ? toM(match[3]) : null,
-      gross: toM(match[4]),
-      releaseDate: match[2],
-    });
-  }
+  const flat = text.replace(/\s+/g, " ");
+  const escapeRe = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const findCountry = (key) => {
+    const re = new RegExp(
+      `${escapeRe(key)}\\s+([A-Z][a-z]{2}\\s+\\d{1,2},\\s+20\\d{2})\\s*(?:\\$([\\d,]+)|–|-)?\\s*\\$([\\d,]+)`
+    );
+    const match = flat.match(re);
+    return match
+      ? {
+          opening: match[2] ? toM(match[2]) : null,
+          gross: toM(match[3]),
+          releaseDate: match[1],
+        }
+      : null;
+  };
   const config = [
     ["Mexico", "メキシコ", "🇲🇽"],
     ["United Kingdom", "英国", "🇬🇧"],
@@ -178,7 +181,7 @@ const parseBOM = (text, worldwide) => {
     ["Japan", "日本", "🇯🇵"],
   ];
   return config.map(([key, name, flag]) => {
-    const current = countries.get(key);
+    const current = findCountry(key);
     return current
       ? {
           name,
