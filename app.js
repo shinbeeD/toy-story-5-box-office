@@ -46,13 +46,26 @@ document.querySelector('#compare-table').innerHTML = `<thead><tr><th>作品</th>
 document.querySelector('#weekend-compare-table').innerHTML = `<thead><tr><th>作品</th><th>第${D.weekendMatchedWeek || 2}週末</th><th>前週比</th><th>TS5との差</th></tr></thead><tbody>${D.weekendComparisons.map(x => `<tr class="${x.current ? 'current' : ''}"><td>${x.current?'★ ':''}${x.title}</td><td class="num">${money(x.gross)}</td><td class="num">${delta(x.change)}</td><td class="num">${diff(x.difference)}</td></tr>`).join('')}</tbody>`;
 document.querySelector('#day-match-title').textContent = `公開${D.dayMatchedDay || 14}日目 比較`;
 document.querySelector('#weekend-match-title').textContent = `第${D.weekendMatchedWeek || 2}週末 比較`;
-document.querySelector('#market-grid').innerHTML = D.markets.map(x => { const isJapan=x.name==='日本'; return `<div class="market ${isJapan?'jp':''}"><div class="flag">${x.flag}</div><h3>${x.name}${isJapan?'<span class="flash-badge">超速報</span>':''}</h3><strong>${isJapan?`推計 約¥${J.grossEstimateYen.base.toFixed(1)}億`:money(x.gross)}</strong><footer>${isJapan?`販売 ${numberJa(J.trackedSales)}・公式未公表`:x.status} ${x.share == null ? '' : `・世界比 ${x.share.toFixed(1)}%`}</footer></div>`; }).join('');
+document.querySelector('#market-grid').innerHTML = D.markets.map(x => {
+  const isJapan = x.name === '日本';
+  const japanOfficial = isJapan ? (x.gross ?? J.officialGrossUsd) : null;
+  const japanHasOfficial = isJapan && japanOfficial != null;
+  const badge = isJapan ? `<span class="flash-badge">${japanHasOfficial ? '公式累計' : '超速報'}</span>` : '';
+  const mainValue = isJapan ? (japanHasOfficial ? money(japanOfficial) : `推計 約¥${J.grossEstimateYen.base.toFixed(1)}億`) : money(x.gross);
+  const footer = isJapan
+    ? (japanHasOfficial ? `${x.status || '公式累計反映'}・販売速報 ${numberJa(J.trackedSales)}` : `販売 ${numberJa(J.trackedSales)}・公式未公表`)
+    : x.status;
+  return `<div class="market ${isJapan?'jp':''}"><div class="flag">${x.flag}</div><h3>${x.name}${badge}</h3><strong>${mainValue}</strong><footer>${footer} ${x.share == null ? '' : `・世界比 ${x.share.toFixed(1)}%`}</footer></div>`;
+}).join('');
 const marketSelect = document.querySelector('#market-select');
 marketSelect.innerHTML = D.markets.map((x,i) => `<option value="${i}">${x.flag} ${x.name}</option>`).join('');
 const renderMarketTrend = index => {
   const x = D.markets[index];
   if (x.name === '日本') {
-    document.querySelector('#market-trend').innerHTML = `<div class="jp-trend-summary"><span class="flash-live">● 超速報</span><strong>販売 ${numberJa(J.trackedSales)}</strong><b>参考興収換算 約¥${J.grossEstimateYen.base.toFixed(1)}億</b><small>公式興収の公表後に正式値へ差し替えます</small></div>`;
+    const official = x.gross ?? J.officialGrossUsd;
+    document.querySelector('#market-trend').innerHTML = official != null
+      ? `<div class="jp-trend-summary"><span class="flash-live">● 公式累計反映</span><strong>${money(official)}</strong><b>初日販売速報 ${numberJa(J.trackedSales)}も参考値として保持</b><small>${x.status || 'Box Office Mojo確認値'}。販売速報は公式興収ではないため、公式累計とは別扱いです。</small></div>`
+      : `<div class="jp-trend-summary"><span class="flash-live">● 超速報</span><strong>販売 ${numberJa(J.trackedSales)}</strong><b>参考興収換算 約¥${J.grossEstimateYen.base.toFixed(1)}億</b><small>公式興収の公表後に正式値へ差し替えます</small></div>`;
     return;
   }
   if (x.gross == null || x.growth == null) {
