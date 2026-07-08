@@ -1,5 +1,5 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-07-09 08:06 JST",
+  "updatedAt": "2026-07-09 08:22 JST",
   "dataThrough": "2026-07-07",
   "headline": "世界累計 $776.01M。日本累計$14.56Mも反映、北米は公開19日目で$376.88M",
   "summary": {
@@ -18,23 +18,45 @@ window.BOX_OFFICE_DATA = {
     "basis": "公開14日目までの北米推移、Minions公開2日目でも前日比9.3%増・前週比31.6%減にとどまった木曜実績、第2週末、海外比率を反映。日本初日は販売速報のみで公式興収が未公表のため織り込まず、公式予測ではありません。"
   },
   "japanFlash": {
-    "date": "2026/07/03",
-    "updatedAt": "2026/07/03 23:49",
+    "date": "2026/07/08",
+    "updatedAt": "2026/07/08 最終",
     "rank": 1,
-    "trackedSales": 242760,
-    "seats": 1009186,
+    "trackedSales": 125749,
+    "seats": 976380,
     "seatProgress": 98.1,
     "nextDayTrackedTheaters": 257,
     "nextDayAllTheaters": 387,
-    "referenceCoverage": 66.4,
+    "referenceCoverage": 65.7,
     "grossEstimateYen": {
-      "low": 4.8,
-      "base": 5.7,
-      "high": 6.5
+      "low": 2.68,
+      "base": 2.99,
+      "high": 3.35
     },
-    "status": "Box Office Mojoで日本累計が公式反映。販売速報は初日参考値として保持。",
-    "method": "販売数を翌日の取得館率66.4%と一般的な平均鑑賞単価で拡張した参考レンジ。取得館率と販売構成が一致しないため幅を持たせており、配給発表の興行収入ではありません。",
-    "officialGrossUsd": 14.562
+    "status": "Box Office Mojoの日本累計と、興行収入を見守りたい！の当日販売速報を併記。",
+    "method": "販売速報を時刻別進捗係数で当日最終販売に補正し、取得館率と平均鑑賞単価レンジ（1,400〜1,750円、中心1,560円）で興収換算した推定値。公式興収ではありません。",
+    "officialGrossUsd": 14.562,
+    "snapshotTime": "最終",
+    "showings": 3577,
+    "theaters": 268,
+    "weekRatio": null,
+    "sourceScope": "独立系含む",
+    "progressFactor": 1,
+    "seatOccupancy": 12.9,
+    "dailyEstimateYen": {
+      "low": 2.68,
+      "base": 2.99,
+      "high": 3.35
+    },
+    "estimatedFullDaySales": 125749,
+    "estimatedAllMarketSales": 191399,
+    "seatPlan": {
+      "date": "2026/07/10",
+      "seats": 969358,
+      "showings": 3620,
+      "trackedTheaters": 253,
+      "allTheaters": 385,
+      "coverage": 65.7
+    }
   },
   "trajectory": {
     "labels": [
@@ -754,11 +776,11 @@ window.BOX_OFFICE_DATA = {
       "note": "The Numbers日次確定値。"
     },
     {
-      "metric": "日本累計",
+      "metric": "日本累計・速報",
       "adopted": 14.562,
-      "alternate": 5.7,
+      "alternate": 2.99,
       "difference": null,
-      "note": "BOMの日本累計USDを採用。円建て販売速報は公式興収ではないため差額比較しない。"
+      "note": "BOMの日本累計USDを採用。円建て日割速報は販売数ベースの推定で、公式興収とは別扱い。"
     }
   ],
   "insights": [
@@ -766,6 +788,7 @@ window.BOX_OFFICE_DATA = {
     "第3週末は$30.32Mで前週比57.0%減。祝日週末後の平日推移を注視。",
     "7/7の日次興収は$6.69M、前週同曜日比47.0%減。競合ファミリー作品の流入下でも累計は着実に上積み。",
     "海外累計は$399.13M、世界比51.4%。日本累計$14.56Mの反映で海外比率が上昇。",
+    "日本速報は2026/07/08 最終時点で販売125,749、日割推定は約2.99億円（独立系含む）。",
     "同日比較には公開曜日・祝日・上映館数・為替差があるため、順位だけでなく下落率と海外比率を合わせて見る。"
   ],
   "competition": {
@@ -821,7 +844,7 @@ window.BOX_OFFICE_DATA = {
       "note": "初登場3位。Official Album Downloadsでは初登場99位。Billboard 200は確認できた公表値がなく未掲載。"
     }
   },
-  "outlook": "北米は最終$525.00M前後、世界最終は$1100.00M〜$1300.00M（中心$1200.00M）を継続。日本の公式累計反映で海外側の厚みが増したが、競合ファミリー作の影響で北米の週末下落率には注意。",
+  "outlook": "北米は最終$525.00M前後、世界最終は$1100.00M〜$1300.00M（中心$1200.00M）を継続。日本は公式累計に加え、朝〜当日販売速報の日割推定も追跡する。速報値は取得館率・時刻進捗で大きく振れるため、公式累計とは別枠で見る。",
   "sources": [
     {
       "name": "The Numbers",
