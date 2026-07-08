@@ -157,6 +157,16 @@ const parseWeekends = (text) => {
 const parseBOM = (text, worldwide) => {
   const flat = text.replace(/\s+/g, " ");
   const escapeRe = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const fallbackByKey = {
+    Mexico: { opening: 25.863, gross: 59.128, releaseDate: "Jun 18, 2026", fallback: true },
+    "United Kingdom": { opening: 20.312, gross: 50.378, releaseDate: "Jun 19, 2026", fallback: true },
+    China: { opening: 17.983, gross: 36.999, releaseDate: "Jun 19, 2026", fallback: true },
+    France: { opening: 7.320, gross: 21.070, releaseDate: "Jun 17, 2026", fallback: true },
+    Brazil: { opening: 6.539, gross: 16.994, releaseDate: "Jun 18, 2026", fallback: true },
+    Australia: { opening: 6.844, gross: 19.379, releaseDate: "Jun 18, 2026", fallback: true },
+    "South Korea": { opening: 5.936, gross: 14.849, releaseDate: "Jun 17, 2026", fallback: true },
+    Japan: { opening: null, gross: 14.562, releaseDate: "Jul 3, 2026", fallback: true },
+  };
   const findCountry = (key) => {
     const re = new RegExp(
       `${escapeRe(key)}\\s+([A-Z][a-z]{2}\\s+\\d{1,2},\\s+20\\d{2})\\s*(?:\\$([\\d,]+)|–|-)?\\s*\\$([\\d,]+)`
@@ -181,7 +191,7 @@ const parseBOM = (text, worldwide) => {
     ["Japan", "日本", "🇯🇵"],
   ];
   return config.map(([key, name, flag]) => {
-    const current = findCountry(key);
+    const current = findCountry(key) ?? fallbackByKey[key];
     return current
       ? {
           name,
@@ -189,7 +199,7 @@ const parseBOM = (text, worldwide) => {
           gross: round(current.gross, 3),
           growth: current.opening == null ? null : round(current.gross - current.opening, 3),
           share: worldwide ? round((current.gross / worldwide) * 100, 1) : null,
-          status: key === "Japan" ? "公式累計反映" : "公開中",
+          status: current.fallback ? (key === "Japan" ? "公式累計・前回確認値" : "前回確認値") : key === "Japan" ? "公式累計反映" : "公開中",
         }
       : {
           name,
