@@ -258,13 +258,182 @@ const fetchPeer = async (peer) => {
 
 const byDay = (rows, day) => rows.find((row) => row.days === day);
 const byWeek = (rows, week) => rows.find((row) => row.week === week);
+const compactNumber = (value) => {
+  const cleaned = String(value ?? "").replace(/[^\d.]/g, "");
+  return cleaned ? Number(cleaned) : null;
+};
+const yyyymmddToSlash = (value) =>
+  value ? `${value.slice(0, 4)}/${value.slice(4, 6)}/${value.slice(6, 8)}` : null;
+const timeMinutes = (value) => {
+  const match = String(value ?? "").match(/^(\d{1,2}):(\d{2})$/);
+  return match ? Number(match[1]) * 60 + Number(match[2]) : 24 * 60;
+};
+const dayProgressFactor = (timeLabel) => {
+  if (!timeLabel || timeLabel === "最終") return 1;
+  const minutes = timeMinutes(timeLabel);
+  const hour = minutes / 60;
+  const points = [
+    [8, 0.04],
+    [10, 0.10],
+    [12, 0.24],
+    [14, 0.42],
+    [16, 0.58],
+    [17, 0.68],
+    [19, 0.90],
+    [20, 0.95],
+    [21, 0.98],
+    [23, 1.00],
+  ];
+  if (hour <= points[0][0]) return points[0][1];
+  for (let i = 1; i < points.length; i += 1) {
+    const [h1, f1] = points[i - 1];
+    const [h2, f2] = points[i];
+    if (hour <= h2) return f1 + ((hour - h1) / (h2 - h1)) * (f2 - f1);
+  }
+  return 1;
+};
+const estimateJapanGrossYen = (trackedSales, coverage, progressFactor) => {
+  if (!trackedSales) return null;
+  const safeProgress = Math.max(0.04, Math.min(1, progressFactor || 1));
+  const safeCoverage = coverage ? Math.max(35, Math.min(100, coverage)) / 100 : 0.64;
+  const estimatedFullDaySales = Math.round(trackedSales / safeProgress);
+  const estimatedAllMarketSales = Math.round(estimatedFullDaySales / safeCoverage);
+  const toOku = (ticketPrice) => round((estimatedAllMarketSales * ticketPrice) / 100000000, 2);
+  return {
+    low: toOku(1400),
+    base: toOku(1560),
+    high: toOku(1750),
+    estimatedFullDaySales,
+    estimatedAllMarketSales,
+  };
+};
+const parseMimorinRow = (line, kind) => {
+  const tokens = line.replace(/＊/g, "*").trim().split(/\s+/);
+  const title = tokens.slice(kind === "seatPlan" ? 8 : 6).join(" ");
+  if (!/トイ[・･]ストーリー[５5]/.test(title)) return null;
+  if (kind === "seatPlan") {
+    return {
+      rank: compactNumber(tokens[0]),
+      seats: compactNumber(tokens[1]),
+      showings: compactNumber(tokens[2]),
+      trackedTheaters: compactNumber(tokens[5]),
+      allTheaters: compactNumber(tokens[6]),
+      coverage: compactNumber(tokens[7]),
+      title,
+    };
+  }
+  return {
+    rank: compactNumber(tokens[0]),
+    sales: compactNumber(tokens[1]),
+    seats: compactNumber(tokens[2]),
+    showings: compactNumber(tokens[3]),
+    theaters: compactNumber(tokens[4]),
+    weekRatio: tokens[5] && tokens[5] !== "******" ? compactNumber(tokens[5]) : null,
+    title,
+  };
+};
+const parseMimorin = (html) => {
+  if (!html) return null;
+  const lines = clean(html)
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const dailyCandidates = [];
+  const seatPlans = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (/デイリー.*ランキング/.test(line) && /202\d{5}/.test(line)) {
+      const dateRaw = line.match(/：(\d{8})|:(\d{8})/)?.slice(1).find(Boolean);
+      const hour = line.match(/（(\d{1,2})時中間集計）/)?.[1];
+      const snapshotTime = hour ? `${hour.padStart(2, "0")}:00` : line.includes("中間集計") ? null : "最終";
+      const independent = line.includes("独立系を含む");
+      for (let j = i + 1; j < Math.min(lines.length, i + 45); j += 1) {
+        const row = parseMimorinRow(lines[j], "daily");
+        if (!row) continue;
+        dailyCandidates.push({
+          ...row,
+          dateRaw,
+          date: yyyymmddToSlash(dateRaw),
+          snapshotTime,
+          independent,
+          sourceTitle: line,
+        });
+        break;
+      }
+    }
+    if (/座席数・上映回数・館数前日集計/.test(line) && /202\d{5}/.test(line)) {
+      const dateRaw = line.match(/：(\d{8})|:(\d{8})/)?.slice(1).find(Boolean);
+      for (let j = i + 1; j < Math.min(lines.length, i + 45); j += 1) {
+        const row = parseMimorinRow(lines[j], "seatPlan");
+        if (!row) continue;
+        seatPlans.push({
+          ...row,
+          dateRaw,
+          date: yyyymmddToSlash(dateRaw),
+          sourceTitle: line,
+        });
+        break;
+      }
+    }
+  }
+  const latestDaily = dailyCandidates
+    .filter((row) => row.dateRaw && row.sales)
+    .sort(
+      (a, b) =>
+        b.dateRaw.localeCompare(a.dateRaw) ||
+        timeMinutes(b.snapshotTime) - timeMinutes(a.snapshotTime) ||
+        Number(b.independent) - Number(a.independent)
+    )[0];
+  const latestSeatPlan = seatPlans
+    .filter((row) => row.dateRaw && row.seats)
+    .sort((a, b) => b.dateRaw.localeCompare(a.dateRaw))[0];
+  if (!latestDaily) return null;
+  const progressFactor = dayProgressFactor(latestDaily.snapshotTime);
+  const coverage = latestSeatPlan?.coverage ?? null;
+  const estimate = estimateJapanGrossYen(latestDaily.sales, coverage, progressFactor);
+  return {
+    date: latestDaily.date,
+    updatedAt: `${latestDaily.date} ${latestDaily.snapshotTime || "速報"}`,
+    snapshotTime: latestDaily.snapshotTime || "速報",
+    rank: latestDaily.rank,
+    trackedSales: latestDaily.sales,
+    seats: latestDaily.seats,
+    showings: latestDaily.showings,
+    theaters: latestDaily.theaters,
+    weekRatio: latestDaily.weekRatio,
+    sourceScope: latestDaily.independent ? "独立系含む" : "通常集計",
+    progressFactor: round(progressFactor, 3),
+    seatOccupancy: latestDaily.seats ? round((latestDaily.sales / latestDaily.seats) * 100, 1) : null,
+    dailyEstimateYen: estimate ? { low: estimate.low, base: estimate.base, high: estimate.high } : null,
+    estimatedFullDaySales: estimate?.estimatedFullDaySales ?? null,
+    estimatedAllMarketSales: estimate?.estimatedAllMarketSales ?? null,
+    seatPlan: latestSeatPlan
+      ? {
+          date: latestSeatPlan.date,
+          seats: latestSeatPlan.seats,
+          showings: latestSeatPlan.showings,
+          trackedTheaters: latestSeatPlan.trackedTheaters,
+          allTheaters: latestSeatPlan.allTheaters,
+          coverage: latestSeatPlan.coverage,
+        }
+      : null,
+    referenceCoverage: latestSeatPlan?.coverage ?? null,
+    status: "興行収入を見守りたい！販売速報ベース・日割推定",
+    method:
+      "販売速報を時刻別進捗係数で当日最終販売に補正し、取得館率と平均鑑賞単価レンジ（1,400〜1,750円、中心1,560円）で興収換算した推定値。公式興収ではありません。",
+  };
+};
 
 const update = async () => {
   const data = readData();
   const previousWorld = data.summary?.worldwide ?? null;
-  const [numbersHtml, mojoHtml] = await Promise.all([
+  const [numbersHtml, mojoHtml, mimorinHtml] = await Promise.all([
     fetchText("https://www.the-numbers.com/movie/Toy-Story-5-%282026%29"),
     fetchText("https://www.boxofficemojo.com/title/tt29355505/"),
+    fetchText("https://mimorin2014.com/?pc=").catch((error) => {
+      console.warn(`Mimorin skipped: ${error.message}`);
+      return null;
+    }),
   ]);
   const numbersText = clean(numbersHtml);
   const mojoText = clean(mojoHtml);
@@ -284,6 +453,7 @@ const update = async () => {
   };
   const parsedMarkets = parseBOM(mojoText, adopted.worldwide);
   const japanMarket = parsedMarkets.find((market) => market.name === "日本");
+  const mimorin = parseMimorin(mimorinHtml);
   const trendDate = shortDate(latest.isoDate);
   const existingTrend = data.worldwideTrend ?? [];
   const previousTrendRow = [...existingTrend].filter((row) => row.date !== trendDate).at(-1);
@@ -346,9 +516,20 @@ const update = async () => {
 
   data.markets = parsedMarkets;
   const japan = japanMarket;
-  if (japan && japan.gross != null && data.japanFlash) {
-    data.japanFlash.officialGrossUsd = japan.gross;
-    data.japanFlash.status = "Box Office Mojoで日本累計が公式反映。販売速報は初日参考値として保持。";
+  if (data.japanFlash) {
+    if (mimorin) {
+      data.japanFlash = {
+        ...data.japanFlash,
+        ...mimorin,
+        grossEstimateYen: mimorin.dailyEstimateYen ?? data.japanFlash.grossEstimateYen,
+      };
+    }
+    if (japan && japan.gross != null) {
+      data.japanFlash.officialGrossUsd = japan.gross;
+      data.japanFlash.status = mimorin
+        ? "Box Office Mojoの日本累計と、興行収入を見守りたい！の当日販売速報を併記。"
+        : "Box Office Mojoで日本累計が公式反映。販売速報は前回値として保持。";
+    }
   }
 
   data.checks = [
@@ -381,11 +562,11 @@ const update = async () => {
       note: "The Numbers日次確定値。",
     },
     {
-      metric: `日本累計`,
+      metric: `日本累計・速報`,
       adopted: japan?.gross ?? null,
-      alternate: data.japanFlash?.grossEstimateYen?.base ?? null,
+      alternate: data.japanFlash?.dailyEstimateYen?.base ?? data.japanFlash?.grossEstimateYen?.base ?? null,
       difference: null,
-      note: "BOMの日本累計USDを採用。円建て販売速報は公式興収ではないため差額比較しない。",
+      note: "BOMの日本累計USDを採用。円建て日割速報は販売数ベースの推定で、公式興収とは別扱い。",
     },
   ];
 
@@ -500,6 +681,9 @@ const update = async () => {
     `第${latestWeekend.week}週末は${money(latestWeekend.gross)}で前週比${latestWeekend.change == null ? "未更新" : `${Math.abs(latestWeekend.change).toFixed(1)}%減`}。祝日週末後の平日推移を注視。`,
     `${latest.date}の日次興収は${money(latest.gross)}、前週同曜日比${latest.wow == null ? "未更新" : `${Math.abs(latest.wow).toFixed(1)}%減`}。競合ファミリー作品の流入下でも累計は着実に上積み。`,
     `海外累計は${money(adopted.international)}、世界比${((adopted.international / adopted.worldwide) * 100).toFixed(1)}%。日本累計${japan?.gross ? money(japan.gross) : "未更新"}の反映で海外比率が上昇。`,
+    data.japanFlash?.dailyEstimateYen
+      ? `日本速報は${data.japanFlash.date} ${data.japanFlash.snapshotTime}時点で販売${data.japanFlash.trackedSales.toLocaleString("ja-JP")}、日割推定は約${data.japanFlash.dailyEstimateYen.base.toFixed(2)}億円（${data.japanFlash.sourceScope}）。`
+      : "日本速報は販売サイトの取得状況により未更新。公式累計と次回速報を分けて確認する。",
     "同日比較には公開曜日・祝日・上映館数・為替差があるため、順位だけでなく下落率と海外比率を合わせて見る。",
   ];
 
@@ -520,7 +704,7 @@ const update = async () => {
     },
   };
 
-  data.outlook = `北米は最終${money(finalDomesticProjection)}前後、世界最終は${money(data.forecast.low)}〜${money(data.forecast.high)}（中心${money(data.forecast.base)}）を継続。日本の公式累計反映で海外側の厚みが増したが、競合ファミリー作の影響で北米の週末下落率には注意。`;
+  data.outlook = `北米は最終${money(finalDomesticProjection)}前後、世界最終は${money(data.forecast.low)}〜${money(data.forecast.high)}（中心${money(data.forecast.base)}）を継続。日本は公式累計に加え、朝〜当日販売速報の日割推定も追跡する。速報値は取得館率・時刻進捗で大きく振れるため、公式累計とは別枠で見る。`;
   data.sources = [
     { name: "The Numbers", url: "https://www.the-numbers.com/movie/Toy-Story-5-%282026%29" },
     { name: "Box Office Mojo", url: "https://www.boxofficemojo.com/title/tt29355505/" },
