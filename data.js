@@ -1,13 +1,13 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-07-09 07:16 JST",
+  "updatedAt": "2026-07-09 07:56 JST",
   "dataThrough": "2026-07-07",
-  "headline": "世界累計 $776.01M。日本累計も反映、北米は公開19日目で$376.88M",
+  "headline": "世界累計 $776.01M。北米は公開19日目で$376.88M",
   "summary": {
     "worldwide": 776.011973,
     "domestic": 376.883879,
     "international": 399.128094,
     "latestDaily": 6.685582,
-    "worldDelta": 149.448724,
+    "worldDelta": 0,
     "billionProgress": 77.6
   },
   "forecast": {
@@ -239,7 +239,7 @@ window.BOX_OFFICE_DATA = {
       "domestic": 376.883879,
       "international": 399.128094,
       "worldwide": 776.011973,
-      "increase": 149.448724,
+      "increase": 0,
       "status": "The Numbers更新値",
       "latest": true
     }
@@ -727,8 +727,8 @@ window.BOX_OFFICE_DATA = {
     {
       "metric": "北米累計",
       "adopted": 376.883879,
-      "alternate": 370.198297,
-      "difference": 6.685582,
+      "alternate": 376.883879,
+      "difference": 0,
       "note": "The Numbersを採用。Box Office Mojoとの差は更新時刻差として記録。"
     },
     {
@@ -741,8 +741,8 @@ window.BOX_OFFICE_DATA = {
     {
       "metric": "世界累計",
       "adopted": 776.011973,
-      "alternate": 768.198297,
-      "difference": 7.813676,
+      "alternate": 774.883879,
+      "difference": 1.128094,
       "note": "The Numbersを採用。BOMは国別確認に使用。"
     },
     {
