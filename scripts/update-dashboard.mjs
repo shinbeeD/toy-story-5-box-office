@@ -157,7 +157,7 @@ const parseWeekends = (text) => {
 const parseBOM = (text, worldwide) => {
   const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
   const countries = new Map();
-  const re = /^(.+?)\s+([A-Z][a-z]{2}\s+\d{1,2},\s+20\d{2})\s+(?:\$([\d,]+)|–|-)\s+\$([\d,]+)$/;
+  const re = /^(.+?)\s+([A-Z][a-z]{2}\s+\d{1,2},\s+20\d{2})\s*(?:\$([\d,]+)|–|-)?\s*\$([\d,]+)$/;
   for (const line of lines) {
     const match = line.match(re);
     if (!match) continue;
@@ -269,12 +269,14 @@ const update = async () => {
     international: numbers.international ?? mojo.international ?? data.summary.international,
     worldwide: numbers.worldwide ?? mojo.worldwide ?? data.summary.worldwide,
   };
+  const parsedMarkets = parseBOM(mojoText, adopted.worldwide);
+  const japanMarket = parsedMarkets.find((market) => market.name === "日本");
   const latestWorldDelta =
     previousWorld == null ? null : round(adopted.worldwide - previousWorld, 6);
 
   data.updatedAt = jstStamp();
   data.dataThrough = latest.isoDate;
-  data.headline = `世界累計 ${money(adopted.worldwide)}。日本累計も反映、北米は公開${latest.days}日目で${money(adopted.domestic)}`;
+  data.headline = `世界累計 ${money(adopted.worldwide)}。${japanMarket?.gross ? `日本累計${money(japanMarket.gross)}も反映、` : ""}北米は公開${latest.days}日目で${money(adopted.domestic)}`;
   data.summary = {
     worldwide: adopted.worldwide,
     domestic: adopted.domestic,
@@ -324,8 +326,8 @@ const update = async () => {
     nextTrend,
   ].slice(-8);
 
-  data.markets = parseBOM(mojoText, adopted.worldwide);
-  const japan = data.markets.find((market) => market.name === "日本");
+  data.markets = parsedMarkets;
+  const japan = japanMarket;
   if (japan && japan.gross != null && data.japanFlash) {
     data.japanFlash.officialGrossUsd = japan.gross;
     data.japanFlash.status = "Box Office Mojoで日本累計が公式反映。販売速報は初日参考値として保持。";
