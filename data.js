@@ -1,5 +1,5 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-07-09 09:59 JST",
+  "updatedAt": "2026-07-09 10:02 JST",
   "dataThrough": "2026-07-07",
   "headline": "世界累計 $776.01M。日本累計$14.56Mも反映、北米は公開19日目で$376.88M",
   "summary": {
