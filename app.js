@@ -141,14 +141,18 @@ renderJapanDay10Watch();
 const renderJapanUsdMission = () => {
   const mission = D.japanUsdMission;
   if (!mission) return;
-  const max = Math.max(180, ...(mission.milestones || []).map((x) => x.value || 0));
   setHTML(
     "#japan-usd-mission",
     `<div class="usd-mission-head"><div><small>為替前提</small><strong>1ドル = ${mission.fxYenPerUsd}円</strong></div><div><small>$100Mライン</small><strong>${yenOku(mission.usd100LineYenBillion, 1)}</strong></div><div><small>藤井予想</small><strong>${yenOku(mission.fujiiForecastYenBillion, 0)} ≒ $${mission.fujiiForecastUsdMillion}M</strong></div></div>
-    <div class="usd-track">${mission.milestones
+    <div class="usd-step-track">${mission.milestones
       .map(
-        (m) =>
-          `<span class="${m.highlight ? "highlight" : ""} ${m.fujii ? "fujii" : ""}" style="left:${Math.min(100, (m.value / max) * 100)}%"><i></i><b>${m.label}</b><em>${yenOku(m.value, m.value % 1 ? 1 : 0)}</em></span>`
+        (m, index) =>
+          `<div class="usd-step-card ${m.highlight ? "highlight" : ""} ${m.fujii ? "fujii" : ""}">
+            <span class="usd-step-dot">${index + 1}</span>
+            <small>${m.highlight ? "$100M換算" : m.fujii ? "強気上振れ" : "通過目安"}</small>
+            <strong>${yenOku(m.value, m.value % 1 ? 1 : 0)}</strong>
+            <em>${m.label}</em>
+          </div>`
       )
       .join("")}</div>
     <details class="compact-details"><summary>為替換算の注意</summary><p>${mission.note}</p></details>`
