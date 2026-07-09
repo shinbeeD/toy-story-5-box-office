@@ -121,16 +121,34 @@ const renderJapanDay10Watch = () => {
   if (!watch) return;
   const target = watch.targetYenBillion || 50;
   const base = watch.scenarios?.find((x) => x.label === "Base") || watch.scenarios?.[0];
+  const findItem = (needle) => watch.items?.find((item) => item.label.includes(needle));
+  const pathItems = [
+    { step: "公式3日", item: findItem("公式初週"), tone: "official" },
+    { step: "5日目", item: findItem("5日目"), tone: "estimate" },
+    { step: "7日目", item: findItem("7日目"), tone: "estimate" },
+    { step: "週末上積み", item: findItem("2週目"), tone: "weekend" },
+    { step: "10日到達", item: findItem("10日累計"), tone: "goal" },
+  ].filter((x) => x.item);
+  const remaining =
+    base?.remainingToTarget > 0
+      ? `50億まであと${base.remainingToTarget.toFixed(1)}億円`
+      : `${Math.abs(base?.remainingToTarget || 0).toFixed(1)}億円超え`;
   setHTML(
     "#japan-day10-watch",
-    `<div class="day10-hero"><div><small>10日累計 Base</small><strong>${yenOku(base?.value, 1)}</strong><span>50億まで ${base?.remainingToTarget > 0 ? `あと${base.remainingToTarget.toFixed(1)}億円` : `${Math.abs(base?.remainingToTarget || 0).toFixed(1)}億円超え`}</span></div><div class="day10-meter"><i style="width:${Math.min(110, base?.progress || 0)}%"></i><b>${target}億ライン</b></div></div>
-    <div class="watch-list">${watch.items
-      .map((item) => `<div><span>${item.label}</span><strong>${formatScenarioValue(item)}</strong>${sourceTag(item.sourceStatus)}</div>`)
+    `<div class="day10-focus">
+      <div class="day10-score"><small>現在の本線</small><strong>${yenOku(base?.value, 1)}</strong><span>${remaining}</span></div>
+      <div class="day10-meter-panel"><div class="day10-meter"><i style="width:${Math.min(110, base?.progress || 0)}%"></i><b>${target}億ライン</b></div><p>Baseは50億目前。Bullなら突破、Conservativeなら少し届かない見立てです。</p></div>
+    </div>
+    <div class="day10-path">${pathItems
+      .map(
+        ({ step, item, tone }) =>
+          `<div class="day10-node ${tone}"><small>${step}</small><strong>${formatScenarioValue(item)}</strong><span>${item.label}</span>${sourceTag(item.sourceStatus)}</div>`
+      )
       .join("")}</div>
-    <div class="scenario-mini">${watch.scenarios
+    <div class="scenario-mini day10-scenario-focus">${watch.scenarios
       .map(
         (item) =>
-          `<div class="${item.value >= target ? "hit" : item.value >= 48 ? "near" : ""}"><small>${item.label}</small><strong>${yenOku(item.value, 1)}</strong><span>${item.status}</span>${sourceTag(item.sourceStatus)}</div>`
+          `<div class="${item.label === "Base" ? "base" : ""} ${item.value >= target ? "hit" : item.value >= 48 ? "near" : ""}"><small>${item.label}</small><strong>${yenOku(item.value, 1)}</strong><span>${item.status}</span>${sourceTag(item.sourceStatus)}</div>`
       )
       .join("")}</div>
     <p class="data-note">${watch.note}</p>`
@@ -143,15 +161,18 @@ const renderJapanUsdMission = () => {
   if (!mission) return;
   setHTML(
     "#japan-usd-mission",
-    `<div class="usd-mission-head"><div><small>為替前提</small><strong>1ドル = ${mission.fxYenPerUsd}円</strong></div><div><small>$100Mライン</small><strong>${yenOku(mission.usd100LineYenBillion, 1)}</strong></div><div><small>藤井予想</small><strong>${yenOku(mission.fujiiForecastYenBillion, 0)} ≒ $${mission.fujiiForecastUsdMillion}M</strong></div></div>
-    <div class="usd-step-track">${mission.milestones
+    `<div class="usd-focus-grid">
+      <div class="usd-assumption"><small>為替前提</small><strong>1ドル = ${mission.fxYenPerUsd}円</strong><span>概算換算</span></div>
+      <div class="usd-target-card highlight"><small>$100Mライン</small><strong>${yenOku(mission.usd100LineYenBillion, 1)}</strong><span>ここを超えると日本$100M</span></div>
+      <div class="usd-target-card fujii"><small>藤井予想</small><strong>${yenOku(mission.fujiiForecastYenBillion, 0)}</strong><span>約$${mission.fujiiForecastUsdMillion}M</span></div>
+    </div>
+    <div class="usd-milestone-strip">${mission.milestones
       .map(
-        (m, index) =>
-          `<div class="usd-step-card ${m.highlight ? "highlight" : ""} ${m.fujii ? "fujii" : ""}">
-            <span class="usd-step-dot">${index + 1}</span>
-            <small>${m.highlight ? "$100M換算" : m.fujii ? "強気上振れ" : "通過目安"}</small>
+        (m) =>
+          `<div class="usd-milestone-pill ${m.highlight ? "highlight" : ""} ${m.fujii ? "fujii" : ""}">
+            <small>${m.highlight ? "$100M" : m.fujii ? "強気" : "通過点"}</small>
             <strong>${yenOku(m.value, m.value % 1 ? 1 : 0)}</strong>
-            <em>${m.label}</em>
+            <span>${m.label}</span>
           </div>`
       )
       .join("")}</div>
@@ -172,7 +193,34 @@ const renderScenarioCards = (selector, scenarios) => {
       .join("")}</div>`
   );
 };
-renderScenarioCards("#japan-final-scenarios", D.japanFinalForecastScenarios);
+
+const renderJapanFinalForecast = () => {
+  const scenarios = D.japanFinalForecastScenarios || [];
+  if (!scenarios.length) return;
+  const baseWatch = D.japanDay10Watch?.scenarios?.find((x) => x.label === "Base") || D.japanDay10Watch?.scenarios?.[0];
+  const maxFromRange = (range) => {
+    const nums = String(range || "")
+      .match(/\d+(?:\.\d+)?/g)
+      ?.map(Number);
+    return nums?.length ? Math.max(...nums) : 0;
+  };
+  setHTML(
+    "#japan-final-scenarios",
+    `<div class="forecast-map">
+      <div class="forecast-current-node"><small>現在地</small><strong>10日Base ${yenOku(baseWatch?.value, 1)}</strong><span>50億ライン目前。ここから夏休み平日・箱維持・競合状況でルートが分岐します。</span></div>
+      <div class="forecast-branches">${scenarios
+        .map((item) => {
+          const max = maxFromRange(item.range);
+          const width = Math.min(100, Math.max(18, (max / 170) * 100));
+          const klass = item.fujii ? "fujii" : item.label.toLowerCase().replace(/\s+/g, "-");
+          return `<div class="forecast-route ${klass}" style="--route:${width}%"><small>${item.label}</small><strong>${item.range}</strong><p>${item.note}</p>${sourceTag(item.sourceStatus)}</div>`;
+        })
+        .join("")}</div>
+    </div>
+    <p class="data-note">最新の日本速報と10日50億チャレンジを起点にした分岐図です。170億は本線ではなく、強気上振れの藤井予想として分けています。</p>`
+  );
+};
+renderJapanFinalForecast();
 
 const renderSummerCheckpoints = () => {
   if (!D.summerCheckpoints?.length) return;
@@ -204,18 +252,21 @@ const renderJapanFlash = () => {
   const yenText = estimate.base == null ? "未更新" : `約${yenOku(estimate.base)}`;
   const yenRange = estimate.low == null ? "推定レンジ 未更新" : `推定レンジ ${yenOku(estimate.low)}〜${yenOku(estimate.high)}`;
   const jpSnapshot = J.snapshotTime ? `${J.date} ${trackingTimeLabel(J.snapshotTime)}時点` : `${J.date || "日本速報"}・${J.updatedAt || "更新"}`;
-  const officialOpening = J.officialOpening || D.japanCalibration;
-  const bomUsd = J.officialGrossUsd != null ? money(J.officialGrossUsd, 3) : null;
+  const calibration = D.japanCalibration || {};
+  const fixedTotal = calibration.officialThreeDayGrossYenBillion || J.officialOpening?.grossYenBillion || 24.151;
+  const tracked = calibration.trackedThreeDaySales || 1293102;
+  const yenPerPoint = calibration.yenPerTrackedPoint || Math.round((fixedTotal * 100000000) / tracked);
   setHTML(
     "#japan-flash",
     `<div class="japan-flash-lead"><div><span class="flash-live">● ${J.sourceScope || "販売速報"} ${sourceTag(J.sourceStatus || "TRACKING")}</span><b>${jpSnapshot}</b></div><strong>当日推定興収 ${valueWithSource(yenText, estimate.sourceStatus || "CALC")}</strong><small>${yenRange}</small></div>
     <div class="japan-flash-stats">
       <div><small>当日P値</small><strong>${pValueText(J.trackedSales)}</strong><span>${J.status || "販売速報"}</span>${sourceTag("TRACKING")}</div>
       <div><small>推定最終P値</small><strong>${pValueText(J.estimatedFullDaySales)}</strong><span>${J.calibration || "公式3日間補正"}</span>${sourceTag("CALC")}</div>
-      <div><small>公式3日間</small><strong>${officialOpening?.grossYenBillion ? yenOku(officialOpening.grossYenBillion, 3) : yenOku(D.japanCalibration?.officialThreeDayGrossYenBillion, 3)}</strong><span>動員 約${officialOpening?.admissionsMillion || D.japanCalibration?.officialThreeDayAdmissionsMillion || 1.64}百万人</span>${sourceTag("OFFICIAL")}</div>
-      <div><small>BOM日本累計</small><strong>${bomUsd || "未更新"}</strong><span>USD換算・円建て推定と別枠</span>${sourceTag("BOM")}</div>
+      <div><small>着席率</small><strong>${pctText(J.seatOccupancy)}</strong><span>座席 ${numberJa(J.seats)}</span>${sourceTag("TRACKING")}</div>
+      <div><small>補正係数</small><strong>約${numberJa(yenPerPoint)}円/P</strong><span>公式3日間で校正</span>${sourceTag("CALC")}</div>
     </div>
-    <p class="japan-flash-note"><b>推定値です。</b>${J.method || ""} ${J.officialGrossUsd ? `BOM日本累計は${money(J.officialGrossUsd, 3)}。` : "公式累計とは別扱いです。"}</p>`
+    <p class="japan-flash-note"><b>推定値です。</b>${J.method || ""} 補正基準として公式3日間${yenOku(fixedTotal, 3)}を使っています。${J.officialGrossUsd ? `BOM日本累計は${money(J.officialGrossUsd, 3)}で、円建て当日推定とは別枠です。` : ""}</p>
+    <details class="compact-details pvalue-inline"><summary>P値とは？</summary><div class="pvalue-card"><p><b>P値</b> = 見守りサイト等で取得された販売数指標。全国動員そのものではなく、興収推定には公式値との補正が必要です。</p><div class="pvalue-formula"><span>${yenOku(fixedTotal, 3)}</span><i>÷</i><span>${pValueText(tracked)}</span><i>=</i><strong>約${numberJa(yenPerPoint)}円/P</strong></div><p>${J.pValueNote || "公式累計とは別扱いで、後日修正される可能性があります。"}</p></div></details>`
   );
 };
 renderJapanFlash();
@@ -234,7 +285,8 @@ renderPValueGuide();
 
 const renderJapanDaily = () => {
   const japanTrend = D.japanDailyTrend || J.dailyTrend || [];
-  const japanDailyPoints = japanTrend.slice(-7);
+  const japanRows = japanTrend.filter((x) => x.estimatedGrossYen?.base != null);
+  const japanDailyPoints = japanRows.slice(-7);
   const values = japanDailyPoints.map((x) => x.estimatedGrossYen?.base).filter((v) => v != null);
   const max = values.length ? Math.max(...values) : 1;
   setHTML(
@@ -244,16 +296,16 @@ const renderJapanDaily = () => {
           .map((x, i) => {
             const base = x.estimatedGrossYen?.base ?? null;
             const shortDate = String(x.date).replace(/^2026\//, "");
-            const latest = i === japanDailyPoints.length - 1 || x.date === J.date;
+            const latest = x.date === J.date;
             const noData = base == null;
-            return `<div class="bar-item ${latest ? "highlight" : ""} ${noData ? "no-data" : ""}"><div class="bar-value">${noData ? "未取得" : yenOku(base)}</div><div class="bar" style="height:${noData ? 12 : Math.max(12, (base / max) * 185)}px"></div><div class="bar-label">${shortDate}</div><div class="bar-sub">${trackingTimeLabel(x.snapshotTime)}</div></div>`;
+            return `<div class="bar-item ${latest ? "highlight" : ""} ${noData ? "no-data" : ""}"><div class="bar-value">${noData ? "未取得" : yenOku(base)}</div><div class="bar" style="height:${noData ? 12 : Math.max(12, (base / max) * 185)}px"></div><div class="bar-label">${shortDate}</div><div class="bar-sub">${latest ? "当日推定" : trackingTimeLabel(x.snapshotTime)}</div></div>`;
           })
           .join("")
       : `<div class="empty-market"><strong>日本 日次興収（推定）</strong><span>販売速報の取得後に棒グラフを表示します</span></div>`
   );
   setHTML(
     "#japan-estimate-table",
-    `<thead><tr><th>日付</th><th>速報時点</th><th>P値</th><th>当日推定興収</th><th>レンジ</th><th>補正・信頼度</th></tr></thead><tbody>${japanTrend
+    `<thead><tr><th>日付</th><th>速報時点</th><th>P値</th><th>当日推定興収</th><th>レンジ</th><th>補正・信頼度</th></tr></thead><tbody>${japanRows
       .map((x) => {
         const est = x.estimatedGrossYen;
         const factor = x.weekdayFactor && x.weekdayFactor !== 1 ? ` / 曜日係数×${x.weekdayFactor}` : "";
@@ -431,9 +483,12 @@ const renderMusicChart = (target, item, accent) => {
   const marks = points.map((p, i) => `<g><circle cx="${x(i)}" cy="${y(p.rank)}" r="6" fill="${accent}"/><text class="music-rank-label" x="${x(i)}" y="${y(p.rank) - 12}" text-anchor="middle">#${p.rank}</text></g>`).join("");
   const move = points.length > 1 ? item.latest - points[points.length - 2].rank : null;
   const moveText = move == null ? "初登場" : move === 0 ? "前週同順位" : move > 0 ? `前週から ${move}位下降` : `前週から ${Math.abs(move)}位上昇`;
+  const timeline = [`<span class="music-event release"><i></i><b>${item.releaseDate || "発売日"}</b><small>発売・配信</small></span>`]
+    .concat(points.map((p) => `<span class="music-event"><i></i><b>${p.date}</b><small>#${p.rank}</small></span>`))
+    .join("");
   setHTML(
     target,
-    `<div class="music-card-head"><div><small>${item.chart}</small><h3>${item.title}</h3><span>${item.artist}</span></div><div class="music-latest"><small>最新</small><strong>#${item.latest}</strong></div></div><div class="music-stats"><span>最高 <b>#${item.peak}</b></span><span>${moveText}</span></div><svg class="music-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${item.title}の${item.chart}順位推移"><g class="music-gridlines">${grid}${labels}</g><path class="music-line" d="${path}" stroke="${accent}"/>${marks}</svg><p>${item.note}</p>`
+    `<div class="music-card-head"><div><small>${item.chart}</small><h3>${item.title}</h3><span>${item.artist}</span></div><div class="music-latest"><small>最新</small><strong>#${item.latest}</strong></div></div><div class="music-timeline">${timeline}</div><div class="music-stats"><span>最高 <b>#${item.peak}</b></span><span>${moveText}</span></div><svg class="music-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${item.title}の${item.chart}順位推移"><g class="music-gridlines">${grid}${labels}</g><path class="music-line" d="${path}" stroke="${accent}"/>${marks}</svg><p>${item.note}</p>`
   );
 };
 if (D.musicCharts) {
