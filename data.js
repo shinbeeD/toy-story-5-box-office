@@ -1,5 +1,5 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-07-09 12:36 JST",
+  "updatedAt": "2026-07-09 12:39 JST",
   "dataThrough": "2026-07-07",
   "headline": "世界累計 $776.01M、$1Bまであと$223.99M。日本は10日50億チャレンジへ",
   "summary": {
@@ -1574,5 +1574,5 @@ window.BOX_OFFICE_DATA = {
     "note": "公式3日間興収24.151億円にP値推定を合わせるための補正係数。P値は全国動員そのものではなく販売数指標として扱う。"
   },
   "japanFlashDate": "2026/07/08",
-  "japanTrackingUpdatedAt": "2026-07-09 12:36 JST"
+  "japanTrackingUpdatedAt": "2026-07-09 12:39 JST"
 };
