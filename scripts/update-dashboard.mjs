@@ -12,6 +12,47 @@ const pct = (value) => (value == null ? null : Number(String(value).replace(/[+%
 const round = (value, digits = 3) =>
   value == null ? null : Number(Number(value).toFixed(digits));
 const money = (value, digits = 2) => `$${Number(value).toFixed(digits)}M`;
+const SOURCE_STATUS = {
+  official: "OFFICIAL",
+  trade: "TRADE",
+  bom: "BOM",
+  tn: "TN",
+  tracking: "TRACKING",
+  sns: "SNS_EST",
+  calc: "CALC",
+};
+const JAPAN_CALIBRATION = {
+  officialThreeDayGrossYenBillion: 24.151,
+  officialThreeDayAdmissionsMillion: 1.64,
+  trackedThreeDaySales: 1293102,
+  yenPerTrackedPoint: 1868,
+  firstDayGrossYenBillion: 4.84,
+  firstDayTrackedSales: 248001,
+  openingTrackedSales: {
+    "2026/07/03": 248001,
+    "2026/07/04": 481038,
+    "2026/07/05": 564063,
+  },
+  fixedOpeningDailyGrossYenBillion: {
+    "2026/07/03": 4.84,
+    "2026/07/04": 8.891,
+    "2026/07/05": 10.42,
+  },
+  note:
+    "公式3日間興収24.151億円にP値推定を合わせるための補正係数。P値は全国動員そのものではなく販売数指標として扱う。",
+};
+const JAPAN_WEEKDAY_FACTORS = {
+  0: 1.0,
+  1: 1.0,
+  2: 1.0,
+  3: 0.93,
+  4: 1.0,
+  5: 1.0,
+  6: 1.0,
+};
+const JAPAN_WEEKDAY_NOTES = {
+  3: "水曜サービスデー補正",
+};
 const formatDate = (date) => {
   const months = {
     Jan: "01",
@@ -199,6 +240,8 @@ const parseBOM = (text, worldwide) => {
           gross: round(current.gross, 3),
           growth: current.opening == null ? null : round(current.gross - current.opening, 3),
           share: worldwide ? round((current.gross / worldwide) * 100, 1) : null,
+          sourceStatus: SOURCE_STATUS.bom,
+          unit: "USD million",
           status: current.fallback ? (key === "Japan" ? "公式累計・前回確認値" : "前回確認値") : key === "Japan" ? "公式累計反映" : "公開中",
         }
       : {
@@ -207,6 +250,8 @@ const parseBOM = (text, worldwide) => {
           gross: null,
           growth: null,
           share: null,
+          sourceStatus: null,
+          unit: "USD million",
           status: "未更新",
         };
   });
@@ -274,6 +319,12 @@ const addDaysRaw = (value, offset) => {
 };
 const recentDateRaws = (latestRaw, count) =>
   Array.from({ length: count }, (_, index) => addDaysRaw(latestRaw, index - count + 1));
+const dayOfWeekRaw = (value) => {
+  const year = Number(value.slice(0, 4));
+  const month = Number(value.slice(4, 6));
+  const day = Number(value.slice(6, 8));
+  return new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+};
 const timeMinutes = (value) => {
   const match = String(value ?? "").match(/^(\d{1,2}):(\d{2})$/);
   return match ? Number(match[1]) * 60 + Number(match[2]) : 24 * 60;
@@ -302,19 +353,40 @@ const dayProgressFactor = (timeLabel) => {
   }
   return 1;
 };
-const estimateJapanGrossYen = (trackedSales, coverage, progressFactor) => {
+const estimateJapanGrossYen = (trackedSales, coverage, progressFactor, dateRaw) => {
   if (!trackedSales) return null;
   const safeProgress = Math.max(0.04, Math.min(1, progressFactor || 1));
-  const safeCoverage = coverage ? Math.max(35, Math.min(100, coverage)) / 100 : 0.64;
   const estimatedFullDaySales = Math.round(trackedSales / safeProgress);
-  const estimatedAllMarketSales = Math.round(estimatedFullDaySales / safeCoverage);
-  const toOku = (ticketPrice) => round((estimatedAllMarketSales * ticketPrice) / 100000000, 2);
+  const date = yyyymmddToSlash(dateRaw);
+  const officialFixed = JAPAN_CALIBRATION.fixedOpeningDailyGrossYenBillion[date];
+  if (officialFixed != null) {
+    return {
+      low: officialFixed,
+      base: officialFixed,
+      high: officialFixed,
+      estimatedFullDaySales,
+      estimatedAllMarketSales: estimatedFullDaySales,
+      yenPerTrackedPoint: round((officialFixed * 100000000) / estimatedFullDaySales, 0),
+      weekdayFactor: 1,
+      calibration: "公式3日間興収に整合するよう日別配分",
+      sourceStatus: SOURCE_STATUS.official,
+    };
+  }
+  const weekday = dateRaw ? dayOfWeekRaw(dateRaw) : null;
+  const weekdayFactor = weekday == null ? 1 : JAPAN_WEEKDAY_FACTORS[weekday] ?? 1;
+  const base = round((estimatedFullDaySales * JAPAN_CALIBRATION.yenPerTrackedPoint * weekdayFactor) / 100000000, 2);
+  const low = round(base * (weekday === 3 ? 0.93 : 0.95), 2);
+  const high = round(base * (weekday === 3 ? 1.08 : 1.07), 2);
   return {
-    low: toOku(1400),
-    base: toOku(1560),
-    high: toOku(1750),
+    low,
+    base,
+    high,
     estimatedFullDaySales,
-    estimatedAllMarketSales,
+    estimatedAllMarketSales: estimatedFullDaySales,
+    yenPerTrackedPoint: JAPAN_CALIBRATION.yenPerTrackedPoint,
+    weekdayFactor,
+    calibration: JAPAN_WEEKDAY_NOTES[weekday] ?? "公式3日間補正係数ベース",
+    sourceStatus: SOURCE_STATUS.calc,
   };
 };
 const parseMimorinRow = (line, kind) => {
@@ -434,7 +506,7 @@ const parseMimorin = (html) => {
     .slice(-10)
     .map((row) => {
       const factor = dayProgressFactor(row.snapshotTime);
-      const rowEstimate = estimateJapanGrossYen(row.sales, coverage, factor);
+      const rowEstimate = estimateJapanGrossYen(row.sales, coverage, factor, row.dateRaw);
       return {
         date: row.date,
         snapshotTime: row.snapshotTime || "速報",
@@ -447,6 +519,10 @@ const parseMimorin = (html) => {
         estimatedGrossYen: rowEstimate
           ? { low: rowEstimate.low, base: rowEstimate.base, high: rowEstimate.high }
           : null,
+        sourceStatus: rowEstimate?.sourceStatus ?? SOURCE_STATUS.tracking,
+        calibration: rowEstimate?.calibration ?? null,
+        yenPerTrackedPoint: rowEstimate?.yenPerTrackedPoint ?? null,
+        weekdayFactor: rowEstimate?.weekdayFactor ?? null,
         coverage,
         progressFactor: round(factor, 3),
         status: row.snapshotTime === "最終" ? "最終販売速報" : "中間販売速報",
@@ -467,6 +543,10 @@ const parseMimorin = (html) => {
             seatOccupancy: null,
             estimatedFullDaySales: null,
             estimatedGrossYen: null,
+            sourceStatus: SOURCE_STATUS.tracking,
+            calibration: null,
+            yenPerTrackedPoint: null,
+            weekdayFactor: null,
             coverage,
             progressFactor: null,
             status: "販売データなし",
@@ -474,7 +554,7 @@ const parseMimorin = (html) => {
       )
     : dailyTrend.slice(-7);
   const progressFactor = dayProgressFactor(latestDaily.snapshotTime);
-  const estimate = estimateJapanGrossYen(latestDaily.sales, coverage, progressFactor);
+  const estimate = estimateJapanGrossYen(latestDaily.sales, coverage, progressFactor, latestDaily.dateRaw);
   return {
     date: latestDaily.date,
     updatedAt: `${latestDaily.date} ${latestDaily.snapshotTime || "速報"}`,
@@ -486,12 +566,20 @@ const parseMimorin = (html) => {
     theaters: latestDaily.theaters,
     weekRatio: latestDaily.weekRatio,
     sourceScope: latestDaily.independent ? "独立系含む" : "通常集計",
+    sourceStatus: SOURCE_STATUS.tracking,
     progressFactor: round(progressFactor, 3),
     seatOccupancy: latestDaily.seats ? round((latestDaily.sales / latestDaily.seats) * 100, 1) : null,
-    dailyEstimateYen: estimate ? { low: estimate.low, base: estimate.base, high: estimate.high } : null,
-    currentEstimateYen: estimate ? { low: estimate.low, base: estimate.base, high: estimate.high } : null,
+    dailyEstimateYen: estimate
+      ? { low: estimate.low, base: estimate.base, high: estimate.high, sourceStatus: estimate.sourceStatus }
+      : null,
+    currentEstimateYen: estimate
+      ? { low: estimate.low, base: estimate.base, high: estimate.high, sourceStatus: estimate.sourceStatus }
+      : null,
     estimatedFullDaySales: estimate?.estimatedFullDaySales ?? null,
     estimatedAllMarketSales: estimate?.estimatedAllMarketSales ?? null,
+    yenPerTrackedPoint: estimate?.yenPerTrackedPoint ?? null,
+    weekdayFactor: estimate?.weekdayFactor ?? null,
+    calibration: estimate?.calibration ?? null,
     dailyTrend: filledDailyTrend,
     seatPlan: latestSeatPlan
       ? {
@@ -506,9 +594,160 @@ const parseMimorin = (html) => {
     referenceCoverage: latestSeatPlan?.coverage ?? null,
     status: "興行収入を見守りたい！販売速報ベース・当日推定興収",
     method:
-      "販売速報を時刻別進捗係数で当日最終販売に補正し、取得館率と平均鑑賞単価レンジ（1,400〜1,750円、中心1,560円）で興収換算した当日推定値。公式興収ではありません。",
+      "P値を全国動員そのものとは扱わず、公式3日間興収24.151億円に合わせた補正係数と曜日補正で興収換算した当日推定値。公式累計とは別扱いです。",
   };
 };
+
+const buildJapanDay10Watch = () => {
+  const scenarios = [
+    { label: "Conservative", value: 48.0, status: "未達", sourceStatus: SOURCE_STATUS.calc },
+    { label: "Base", value: 49.3, status: "ほぼ接近", sourceStatus: SOURCE_STATUS.calc },
+    { label: "Bull", value: 50.5, status: "突破", sourceStatus: SOURCE_STATUS.calc },
+  ];
+  return {
+    title: "10日50億チャレンジ",
+    targetYenBillion: 50,
+    sourceStatus: SOURCE_STATUS.calc,
+    items: [
+      { label: "公式初週3日間", value: 24.151, unit: "JPY billion", sourceStatus: SOURCE_STATUS.official },
+      { label: "5日目終了推定", value: 28.55, unit: "JPY billion", sourceStatus: SOURCE_STATUS.sns },
+      { label: "6日目終了推定", valueRange: "30.8〜31.0", unit: "JPY billion", sourceStatus: SOURCE_STATUS.calc },
+      { label: "7日目終了予測", valueRange: "32.2〜32.7", unit: "JPY billion", sourceStatus: SOURCE_STATUS.calc },
+      { label: "2週目金土日予測", valueRange: "16.5〜17.8", unit: "JPY billion", sourceStatus: SOURCE_STATUS.calc },
+      { label: "10日累計予測", valueRange: "48.8〜50.5", unit: "JPY billion", sourceStatus: SOURCE_STATUS.calc },
+    ],
+    scenarios: scenarios.map((scenario) => ({
+      ...scenario,
+      remainingToTarget: round(50 - scenario.value, 1),
+      progress: round((scenario.value / 50) * 100, 1),
+    })),
+    note: "公式3日間24.151億円を起点に、4日目以降はP値補正・曜日補正で推定。公式予測ではありません。",
+  };
+};
+
+const buildJapanUsdMission = (fx = 162) => {
+  const usd100Line = round((fx * 100000000) / 100000000, 1);
+  const fujiiForecast = 170;
+  return {
+    title: "日本1億ドルチャレンジ",
+    fxYenPerUsd: fx,
+    sourceStatus: SOURCE_STATUS.calc,
+    usd100LineYenBillion: usd100Line,
+    fujiiForecastYenBillion: fujiiForecast,
+    fujiiForecastUsdMillion: round((fujiiForecast * 100000000) / fx / 1000000, 1),
+    milestones: [
+      { label: "100億円", value: 100 },
+      { label: "120億円", value: 120 },
+      { label: "150億円", value: 150 },
+      { label: "$100Mライン", value: usd100Line, highlight: true },
+      { label: "藤井予想", value: fujiiForecast, fujii: true },
+    ],
+    note:
+      "為替換算は概算です。Box Office Mojo / The Numbers のUSD換算とは、反映日・為替レート・配給報告タイミングにより異なる場合があります。",
+  };
+};
+
+const buildStaticDashboardData = () => ({
+  sourceStatusLegend: [
+    { code: SOURCE_STATUS.official, label: "公式発表" },
+    { code: SOURCE_STATUS.trade, label: "業界媒体" },
+    { code: SOURCE_STATUS.bom, label: "Box Office Mojo" },
+    { code: SOURCE_STATUS.tn, label: "The Numbers" },
+    { code: SOURCE_STATUS.tracking, label: "見守りP値など販売速報" },
+    { code: SOURCE_STATUS.sns, label: "興行収入系SNS推定" },
+    { code: SOURCE_STATUS.calc, label: "サイト側計算・派生推定" },
+  ],
+  worldwideForecastScenarios: [
+    { label: "Conservative", range: "$950M〜$1.0B", note: "北米・海外が通常ペースで減速した場合", sourceStatus: SOURCE_STATUS.calc },
+    { label: "Base", range: "$1.0B〜$1.08B", note: "日本・海外が粘り、10億ドルを突破する本線寄りシナリオ", sourceStatus: SOURCE_STATUS.calc },
+    { label: "Bull", range: "$1.1B〜$1.2B", note: "日本・メキシコ・欧州・ラテンアメリカがかなり粘った場合", sourceStatus: SOURCE_STATUS.calc },
+    { label: "Super Bull", range: "$1.25B+", note: "現時点ではかなり強気。公式予測ではない", sourceStatus: SOURCE_STATUS.calc },
+  ],
+  japanFinalForecastScenarios: [
+    { label: "Conservative", range: "120〜130億円", note: "10日50億未満、夏休み中盤で減速した場合", sourceStatus: SOURCE_STATUS.calc },
+    { label: "Base", range: "135〜150億円", note: "2週目以降も夏休みファミリー需要で堅調に推移した場合", sourceStatus: SOURCE_STATUS.calc },
+    { label: "Bull", range: "150〜160億円", note: "2週目17億前後、7/24〜30週も強い場合", sourceStatus: SOURCE_STATUS.calc },
+    {
+      label: "Fujii Forecast",
+      range: "170億円",
+      note: "強気上振れシナリオ。公式予測ではない。10日50億近辺、夏休み平日、7/24〜30週、お盆前後の維持が必要",
+      sourceStatus: SOURCE_STATUS.calc,
+      fujii: true,
+    },
+  ],
+  japanDay10Watch: buildJapanDay10Watch(),
+  japanUsdMission: buildJapanUsdMission(162),
+  summerCheckpoints: [
+    { label: "Day 10", focus: "50億に届くか", good: "50億超え", watch: "48〜50億", danger: "47億未満" },
+    { label: "海の日連休", focus: "連休で再加速できるか", good: "連休中に大きく上積み", watch: "通常推移", danger: "箱減・着席率低下" },
+    { label: "7/24〜30週", focus: "夏休み平日で週間10億を守れるか", good: "10〜12億以上", watch: "8〜9億", danger: "6〜7億" },
+    { label: "7/31以降", focus: "モアナ実写、クレしん等の競合後も箱と着席率を守れるか", good: "箱減でも着席率維持", watch: "ファミリー競合でやや鈍化", danger: "大幅箱削り" },
+    { label: "お盆前", focus: "150〜170億ルートが残っているか", good: "100億到達が早い", watch: "150億は残る", danger: "130〜140億寄り" },
+  ],
+  competitionWatch: {
+    northAmerica: [
+      {
+        title: "Moana live-action",
+        note: "北米初動は強弱の予測幅が大きい。箱・ファミリー需要の競合だが、想定より弱いならTS5には追い風。",
+        sourceStatus: SOURCE_STATUS.trade,
+      },
+      {
+        title: "The Odyssey",
+        note: "7/17の大きなWide競合。ファミリー直撃ではないが、IMAX/大箱に影響。",
+        sourceStatus: SOURCE_STATUS.trade,
+      },
+      {
+        title: "7/24 week",
+        note: "大きな新作ファミリー競合が薄い場合、TS5の再安定チャンス。",
+        sourceStatus: SOURCE_STATUS.calc,
+      },
+    ],
+    japan: [
+      { title: "7/24週", note: "ちいかわ、仮面ライダー等。夏休み需要と箱削りのバランスを見る。", sourceStatus: SOURCE_STATUS.calc },
+      { title: "7/31以降", note: "モアナ実写、クレしん等。ファミリー競合後も箱と着席率を守れるかが焦点。", sourceStatus: SOURCE_STATUS.calc },
+      { title: "7/24〜30 stress test", note: "夏休み平日で需要は上がるが、新作ファミリー作品でスクリーンが削られる可能性。", sourceStatus: SOURCE_STATUS.calc },
+    ],
+  },
+  sourceCategories: [
+    {
+      category: "OFFICIAL",
+      items: [
+        { name: "Disney Japan公式・配給発表", url: "https://www.disney.co.jp/" },
+        { name: "Disney / Pixar公式", url: "https://www.pixar.com/" },
+      ],
+    },
+    {
+      category: "BOX OFFICE DATABASE",
+      items: [
+        { name: "Box Office Mojo", url: "https://www.boxofficemojo.com/title/tt29355505/" },
+        { name: "The Numbers", url: "https://www.the-numbers.com/movie/Toy-Story-5-%282026%29" },
+      ],
+    },
+    {
+      category: "TRADE MEDIA",
+      items: [
+        { name: "Variety", url: "https://variety.com/" },
+        { name: "Deadline", url: "https://deadline.com/" },
+        { name: "The Hollywood Reporter", url: "https://www.hollywoodreporter.com/" },
+        { name: "AP News", url: "https://apnews.com/" },
+      ],
+    },
+    {
+      category: "JAPAN TRACKING",
+      items: [
+        { name: "興行収入を見守りたい！", url: "https://mimorin2014.com/?pc=" },
+        { name: "販売P値スクリーンショット / 興行収入系SNS推定", url: "#" },
+      ],
+    },
+    {
+      category: "CALCULATION",
+      items: [
+        { name: "公式3日間興収によるP値補正", url: "#" },
+        { name: "為替換算・10日累計予測・最終興収レンジ予測", url: "#" },
+      ],
+    },
+  ],
+});
 
 const update = async () => {
   const data = readData();
@@ -564,7 +803,8 @@ const update = async () => {
 
   data.updatedAt = jstStamp();
   data.dataThrough = latest.isoDate;
-  data.headline = `世界累計 ${money(adopted.worldwide)}。${japanMarket?.gross ? `日本累計${money(japanMarket.gross)}も反映、` : ""}北米は公開${latest.days}日目で${money(adopted.domestic)}`;
+  data.worldDataThrough = latest.isoDate;
+  data.headline = `世界累計 ${money(adopted.worldwide)}、$1Bまであと${money(1000 - adopted.worldwide)}。日本は10日50億チャレンジへ`;
   data.summary = {
     worldwide: adopted.worldwide,
     domestic: adopted.domestic,
@@ -572,7 +812,19 @@ const update = async () => {
     latestDaily: latest.gross,
     worldDelta: latestWorldDelta,
     billionProgress: round((adopted.worldwide / 1000) * 100, 1),
+    sourceStatus: SOURCE_STATUS.tn,
   };
+  data.forecast = {
+    low: 950,
+    base: 1040,
+    high: 1200,
+    confidence: "シナリオ型・分析推定",
+    basis:
+      "日本は公開3日間の公式発表値を基準にし、4日目以降はP値推定で補完。北米の下落率が重いため、$1.2BはBaseではなくBull寄りとして扱います。公式予測ではありません。",
+    sourceStatus: SOURCE_STATUS.calc,
+  };
+  Object.assign(data, buildStaticDashboardData());
+  data.japanCalibration = { ...JAPAN_CALIBRATION };
 
   data.daily = daily.slice(-7).map(({ date, gross, dod, wow, cumulative }) => ({
     date,
@@ -622,6 +874,8 @@ const update = async () => {
         grossEstimateYen: mimorin.dailyEstimateYen ?? data.japanFlash.grossEstimateYen,
       };
       data.japanDailyTrend = mimorin.dailyTrend;
+      data.japanFlashDate = mimorin.date;
+      data.japanTrackingUpdatedAt = data.updatedAt;
     }
     if (japan && japan.gross != null) {
       data.japanFlash.officialGrossUsd = japan.gross;
@@ -629,43 +883,101 @@ const update = async () => {
         ? "Box Office Mojoの日本累計と、興行収入を見守りたい！の当日販売速報を併記。"
         : "Box Office Mojoで日本累計が公式反映。販売速報は前回値として保持。";
     }
+    data.japanFlash.officialOpening = {
+      grossYenBillion: JAPAN_CALIBRATION.officialThreeDayGrossYenBillion,
+      admissionsMillion: JAPAN_CALIBRATION.officialThreeDayAdmissionsMillion,
+      days: 3,
+      sourceStatus: SOURCE_STATUS.official,
+      note: "公開3日間の公式・報道ベース値。P値推定の校正基準。",
+    };
+    data.japanFlash.pValueNote =
+      "P値は全国動員数そのものではなく、取得対象館のチケット販売数指標です。興収推定には公式値との補正が必要です。";
   }
+  data.marketOpeningComparisons = {
+    ...data.marketOpeningComparisons,
+    日本: {
+      unit: "JPY billion",
+      note: "日本比較は円建て。USD換算は為替・反映日で変動するため別扱い。",
+      entries: [
+        {
+          title: "トイ・ストーリー5",
+          gross: JAPAN_CALIBRATION.officialThreeDayGrossYenBillion,
+          openingGross: JAPAN_CALIBRATION.officialThreeDayGrossYenBillion,
+          days: 3,
+          admissionsMillion: JAPAN_CALIBRATION.officialThreeDayAdmissionsMillion,
+          sourceStatus: SOURCE_STATUS.official,
+          color: "#e4322b",
+          current: true,
+        },
+      ],
+    },
+  };
 
   data.checks = [
     {
       metric: "北米累計",
       adopted: adopted.domestic,
+      adoptedUnit: "USD million",
+      adoptedSourceStatus: SOURCE_STATUS.tn,
       alternate: mojo.domestic,
+      alternateUnit: "USD million",
+      alternateSourceStatus: SOURCE_STATUS.bom,
       difference: mojo.domestic == null ? null : round(adopted.domestic - mojo.domestic, 6),
+      differenceUnit: "USD million",
       note: "The Numbersを採用。Box Office Mojoとの差は更新時刻差として記録。",
     },
     {
       metric: "海外累計",
       adopted: adopted.international,
+      adoptedUnit: "USD million",
+      adoptedSourceStatus: SOURCE_STATUS.tn,
       alternate: mojo.international,
+      alternateUnit: "USD million",
+      alternateSourceStatus: SOURCE_STATUS.bom,
       difference: mojo.international == null ? null : round(adopted.international - mojo.international, 6),
+      differenceUnit: "USD million",
       note: "The Numbersを採用。国別内訳はBox Office Mojoで補強。",
     },
     {
       metric: "世界累計",
       adopted: adopted.worldwide,
+      adoptedUnit: "USD million",
+      adoptedSourceStatus: SOURCE_STATUS.tn,
       alternate: mojo.worldwide,
+      alternateUnit: "USD million",
+      alternateSourceStatus: SOURCE_STATUS.bom,
       difference: mojo.worldwide == null ? null : round(adopted.worldwide - mojo.worldwide, 6),
-      note: "The Numbersを採用。BOMは国別確認に使用。",
+      differenceUnit: "USD million",
+      note: "The Numbersを採用。BOMとの差は主に更新時刻差。BOMは国別確認に使用。",
     },
     {
       metric: `${latest.date}北米日次`,
       adopted: latest.gross,
+      adoptedUnit: "USD million",
+      adoptedSourceStatus: SOURCE_STATUS.tn,
       alternate: null,
       difference: null,
       note: "The Numbers日次確定値。",
     },
     {
-      metric: `日本累計・速報`,
+      metric: "日本BOM累計",
       adopted: japan?.gross ?? null,
-      alternate: data.japanFlash?.dailyEstimateYen?.base ?? data.japanFlash?.grossEstimateYen?.base ?? null,
+      adoptedUnit: "USD million",
+      adoptedSourceStatus: SOURCE_STATUS.bom,
+      alternate: null,
       difference: null,
-      note: "BOMの日本累計USDを採用。円建て当日推定興収は販売数ベースの推定で、公式興収とは別扱い。",
+      note: "BOMの日本累計USD。円建て当日推定とは比較しない。",
+    },
+    {
+      metric: "日本当日P値推定",
+      adopted: data.japanFlash?.dailyEstimateYen?.base ?? data.japanFlash?.grossEstimateYen?.base ?? null,
+      adoptedUnit: "JPY billion",
+      adoptedSourceStatus: SOURCE_STATUS.calc,
+      alternate: data.japanFlash?.trackedSales ?? null,
+      alternateUnit: "P",
+      alternateSourceStatus: SOURCE_STATUS.tracking,
+      difference: null,
+      note: "公式3日間興収で校正したP値ベース推定。BOM累計USDとは別枠。",
     },
   ];
 
@@ -803,7 +1115,7 @@ const update = async () => {
     },
   };
 
-  data.outlook = `北米は最終${money(finalDomesticProjection)}前後、世界最終は${money(data.forecast.low)}〜${money(data.forecast.high)}（中心${money(data.forecast.base)}）を継続。日本は公式累計に加え、朝〜当日販売速報の当日推定興収と日別推定興収推移を追跡する。速報値は取得館率・時刻進捗で大きく振れるため、公式累計とは別枠で見る。`;
+  data.outlook = `世界最終はBase $1.0B〜$1.08B、$1.2BはBull寄り。日本は公開3日間24.151億円の公式値を基準に、4日目以降はP値補正で観測する。藤井予想170億は本線ではなく強気上振れシナリオとして管理。`;
   data.sources = [
     { name: "The Numbers", url: "https://www.the-numbers.com/movie/Toy-Story-5-%282026%29" },
     { name: "Box Office Mojo", url: "https://www.boxofficemojo.com/title/tt29355505/" },
