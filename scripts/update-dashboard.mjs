@@ -264,6 +264,16 @@ const compactNumber = (value) => {
 };
 const yyyymmddToSlash = (value) =>
   value ? `${value.slice(0, 4)}/${value.slice(4, 6)}/${value.slice(6, 8)}` : null;
+const slashToYyyymmdd = (value) => String(value ?? "").replace(/\//g, "");
+const addDaysRaw = (value, offset) => {
+  const year = Number(value.slice(0, 4));
+  const month = Number(value.slice(4, 6));
+  const day = Number(value.slice(6, 8));
+  const date = new Date(Date.UTC(year, month - 1, day + offset));
+  return `${date.getUTCFullYear()}${String(date.getUTCMonth() + 1).padStart(2, "0")}${String(date.getUTCDate()).padStart(2, "0")}`;
+};
+const recentDateRaws = (latestRaw, count) =>
+  Array.from({ length: count }, (_, index) => addDaysRaw(latestRaw, index - count + 1));
 const timeMinutes = (value) => {
   const match = String(value ?? "").match(/^(\d{1,2}):(\d{2})$/);
   return match ? Number(match[1]) * 60 + Number(match[2]) : 24 * 60;
@@ -347,7 +357,19 @@ const parseMimorin = (html) => {
       const hour = line.match(/（(\d{1,2})時中間集計）/)?.[1];
       const snapshotTime = hour ? `${hour.padStart(2, "0")}:00` : line.includes("中間集計") ? null : "最終";
       const independent = line.includes("独立系を含む");
+      let tableStarted = false;
       for (let j = i + 1; j < Math.min(lines.length, i + 45); j += 1) {
+        if (!tableStarted) {
+          if (/順位\s+販売数\s+座席数/.test(lines[j])) tableStarted = true;
+          continue;
+        }
+        if (
+          lines[j] === "続きを読む" ||
+          /座席数・上映回数・館数前日集計/.test(lines[j]) ||
+          (/ランキング/.test(lines[j]) && /202\d{5}/.test(lines[j]))
+        ) {
+          break;
+        }
         const row = parseMimorinRow(lines[j], "daily");
         if (!row) continue;
         dailyCandidates.push({
@@ -363,7 +385,18 @@ const parseMimorin = (html) => {
     }
     if (/座席数・上映回数・館数前日集計/.test(line) && /202\d{5}/.test(line)) {
       const dateRaw = line.match(/：(\d{8})|:(\d{8})/)?.slice(1).find(Boolean);
+      let tableStarted = false;
       for (let j = i + 1; j < Math.min(lines.length, i + 45); j += 1) {
+        if (!tableStarted) {
+          if (/順位\s+座席数\s+回数/.test(lines[j])) tableStarted = true;
+          continue;
+        }
+        if (
+          lines[j] === "続きを読む" ||
+          (/ランキング/.test(lines[j]) && /202\d{5}/.test(lines[j]))
+        ) {
+          break;
+        }
         const row = parseMimorinRow(lines[j], "seatPlan");
         if (!row) continue;
         seatPlans.push({
@@ -419,6 +452,27 @@ const parseMimorin = (html) => {
         status: row.snapshotTime === "最終" ? "最終販売速報" : "中間販売速報",
       };
     });
+  const dailyTrendByDate = new Map(dailyTrend.map((row) => [slashToYyyymmdd(row.date), row]));
+  const latestDailyRaw = latestDaily.dateRaw;
+  const filledDailyTrend = latestDailyRaw
+    ? recentDateRaws(latestDailyRaw, 7).map(
+        (dateRaw) =>
+          dailyTrendByDate.get(dateRaw) ?? {
+            date: yyyymmddToSlash(dateRaw),
+            snapshotTime: "未取得",
+            sourceScope: "データなし",
+            rank: null,
+            trackedSales: null,
+            seats: null,
+            seatOccupancy: null,
+            estimatedFullDaySales: null,
+            estimatedGrossYen: null,
+            coverage,
+            progressFactor: null,
+            status: "販売データなし",
+          }
+      )
+    : dailyTrend.slice(-7);
   const progressFactor = dayProgressFactor(latestDaily.snapshotTime);
   const estimate = estimateJapanGrossYen(latestDaily.sales, coverage, progressFactor);
   return {
@@ -438,7 +492,7 @@ const parseMimorin = (html) => {
     currentEstimateYen: estimate ? { low: estimate.low, base: estimate.base, high: estimate.high } : null,
     estimatedFullDaySales: estimate?.estimatedFullDaySales ?? null,
     estimatedAllMarketSales: estimate?.estimatedAllMarketSales ?? null,
-    dailyTrend,
+    dailyTrend: filledDailyTrend,
     seatPlan: latestSeatPlan
       ? {
           date: latestSeatPlan.date,
@@ -459,7 +513,7 @@ const parseMimorin = (html) => {
 const update = async () => {
   const data = readData();
   const previousWorld = data.summary?.worldwide ?? null;
-  const [numbersHtml, mojoHtml, mimorinHtml] = await Promise.all([
+  const [numbersHtml, mojoHtml, mimorinHomeHtml] = await Promise.all([
     fetchText("https://www.the-numbers.com/movie/Toy-Story-5-%282026%29"),
     fetchText("https://www.boxofficemojo.com/title/tt29355505/"),
     fetchText("https://mimorin2014.com/?pc=").catch((error) => {
@@ -467,6 +521,18 @@ const update = async () => {
       return null;
     }),
   ]);
+  const mimorinSeed = parseMimorin(mimorinHomeHtml);
+  const mimorinArchiveHtmls = mimorinSeed?.date
+    ? await Promise.all(
+        recentDateRaws(slashToYyyymmdd(mimorinSeed.date), 7).map((dateRaw) =>
+          fetchText(`https://mimorin2014.com/blog-date-${dateRaw}.html`).catch((error) => {
+            console.warn(`Mimorin archive skipped ${dateRaw}: ${error.message}`);
+            return null;
+          })
+        )
+      )
+    : [];
+  const mimorinHtml = [mimorinHomeHtml, ...mimorinArchiveHtmls].filter(Boolean).join("\n");
   const numbersText = clean(numbersHtml);
   const mojoText = clean(mojoHtml);
   const numbers = parseSummary(numbersText);
