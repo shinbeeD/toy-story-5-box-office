@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Toy Story 5 Box Office HQ</title>
-  <link rel="stylesheet" href="styles.css?v=20260709-15" />
+  <link rel="stylesheet" href="styles.css?v=20260709-17" />
   <style>.world-peer-series path{stroke-width:3!important}.world-trajectory-svg .current-world path{stroke-width:5!important}.endpoint-label{font-size:12px;font-weight:900;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}.world-slope-title{display:flex;justify-content:space-between;gap:12px;margin:18px 8px 8px;color:#123b69;font-size:12px}.world-slope-title span{color:#6f8295;font-size:11px}.world-peer-slope{background:linear-gradient(180deg,#fffaf0,#fff)}@media(max-width:520px){.world-slope-title{align-items:flex-start;flex-direction:column}}</style>
   <style>.market-peer-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:10px 12px;border-radius:10px;background:#eef8ff;color:#123b69}.market-peer-heading span{color:#6f8295;font-size:10px}.market-peer-heading b{font-size:13px}.mini-race-value{white-space:nowrap}</style>
 </head>
@@ -65,24 +65,6 @@
         <p class="section-subnote">今日取得できたP値から当日興収を概算します。公式累計・BOMのUSD換算とは別枠です。</p>
         <div id="japan-flash"></div>
       </article>
-      <details class="panel update-meta-panel collapsible-panel">
-        <summary><div class="section-title"><span>🧭</span><div><small>DATA STATUS</small><h2>更新・データ対象日</h2></div></div><b>詳しく見る</b></summary>
-        <div id="update-meta"></div>
-      </details>
-      <details class="panel pvalue-panel collapsible-panel">
-        <summary><div class="section-title"><span>🧮</span><div><small>P-VALUE GUIDE</small><h2>P値とは？</h2></div></div><b>詳しく見る</b></summary>
-        <div id="pvalue-guide"></div>
-      </details>
-      <article class="panel chart-panel japan-daily-panel">
-        <div class="section-title"><span>🍿</span><div><small>JAPAN DAILY TREND</small><h2>直近7日の日次推定</h2></div></div>
-        <div class="bar-chart japan-bar-chart" id="japan-daily-chart"></div>
-        <p class="data-note">最新7日分を表示します。興行収入を見守りたい！の販売速報から当日興収を推定したグラフです。北米の日次興収とは異なり公式興収ではないため、日本公式値が出るまでの参考推移として見ます。</p>
-      </article>
-      <details class="panel japan-trend-panel collapsible-panel">
-        <summary><div class="section-title"><span>📊</span><div><small>JAPAN ESTIMATE LOG</small><h2>推定根拠ログ（P値・補正係数）</h2></div></div><b>詳しく見る</b></summary>
-        <div class="table-wrap"><table id="japan-estimate-table"></table></div>
-        <p class="data-note">販売速報から推定した当日興収の推移です。7/3〜7/5は公式3日間興収24.151億円に整合するよう固定し、以降はP値補正・曜日補正で概算します。公式日本累計とは別扱いです。</p>
-      </details>
       <article class="panel forecast-panel">
         <div class="section-title"><span>🔮</span><div><small>FINAL WORLDWIDE SCENARIOS</small><h2>最終世界興行収入 シナリオ</h2></div></div>
         <div id="forecast-card"></div>
@@ -95,11 +77,7 @@
         <div class="section-title"><span>⚔️</span><div><small>COMPETITION WATCH</small><h2>北米・日本 競合状況</h2></div></div>
         <div id="competition-watch"></div>
       </article>
-      <div class="content-grid">
-        <article class="panel chart-panel">
-          <div class="section-title"><span class="rocket">🚀</span><div><small>LAST 7 DAYS</small><h2>北米 日次興収</h2></div></div>
-          <div class="bar-chart" id="daily-chart"></div>
-        </article>
+      <div class="content-grid mission-grid">
         <article class="panel mission-panel">
           <div class="section-title"><span>🤠</span><div><small>MISSION CONTROL</small><h2>今日の注目ポイント</h2></div></div>
           <ul id="insights"></ul>
@@ -111,10 +89,30 @@
         <div class="section-title"><span>🏁</span><div><small>NORTH AMERICA DAY RACE</small><h2>公開後同日・北米累計比較</h2></div></div>
         <div class="race-chart" id="race-chart"></div>
       </article>
+      <details class="panel update-meta-panel collapsible-panel">
+        <summary><div class="section-title"><span>🧭</span><div><small>DATA STATUS</small><h2>更新・データ対象日</h2></div></div><b>詳しく見る</b></summary>
+        <div id="update-meta"></div>
+      </details>
     </section>
 
     <section id="daily" class="tab-page">
-      <article class="panel"><div class="section-title"><span>📅</span><div><small>DAILY LOG</small><h2>直近の日次推移</h2></div></div><div class="daily-guide"><b>1週間前比とは？</b><span>同じ曜日の日次興収との比較です。例：6/26なら6/19と比較。各％の下に、比較元の日付と金額を表示します。</span></div><div class="table-wrap"><table id="daily-table"></table></div></article>
+      <article class="panel daily-hub-panel">
+        <div class="section-title"><span>📅</span><div><small>DAILY LOG</small><h2>直近の日次推移</h2></div></div>
+        <div class="daily-region-grid">
+          <section class="daily-region-card na-daily-card">
+            <div class="daily-region-head"><span>🚀</span><div><small>NORTH AMERICA</small><h3>北米 日次興収</h3></div></div>
+            <div class="bar-chart" id="daily-chart"></div>
+            <div class="daily-guide"><b>1週間前比とは？</b><span>同じ曜日の日次興収との比較です。各％の下に、比較元の日付と金額を表示します。</span></div>
+            <div class="table-wrap"><table id="daily-table"></table></div>
+          </section>
+          <section class="daily-region-card jp-daily-card">
+            <div class="daily-region-head"><span>🍿</span><div><small>JAPAN ESTIMATE</small><h3>日本 日次興収（推定）</h3></div></div>
+            <div class="bar-chart japan-bar-chart" id="japan-daily-chart"></div>
+            <p class="data-note">興行収入を見守りたい！の販売速報から推定した参考推移です。日本公式値が出るまでの観測用で、北米の日次興収とは性質が異なります。</p>
+            <details class="compact-details daily-log-details"><summary>推定根拠ログを見る</summary><div class="table-wrap"><table id="japan-estimate-table"></table></div></details>
+          </section>
+        </div>
+      </article>
       <article class="panel"><div class="section-title"><span>🎬</span><div><small>WEEKEND RUN</small><h2>週末推移</h2></div></div><div class="weekend-cards" id="weekends"></div></article>
     </section>
 
@@ -170,7 +168,7 @@
   </main>
 
   <footer><span>★</span> BOX OFFICE HQ — BUILT FOR THE TOY BOX <span>★</span></footer>
-  <script src="data.js?v=20260709-15"></script>
-  <script src="app.js?v=20260709-15"></script>
+  <script src="data.js?v=20260709-17"></script>
+  <script src="app.js?v=20260709-17"></script>
 </body>
 </html>
