@@ -20,7 +20,7 @@ const pValueText = (value) => (value == null ? "未取得" : `${numberJa(value)}
 const safe = (value) => (value == null || value === "" ? "未更新" : value);
 const sourceClass = (status) => String(status || "").toLowerCase().replace(/_/g, "-");
 const sourceTag = (status) =>
-  status ? `<span class="source-tag source-${sourceClass(status)}">${status}</span>` : "";
+  status ? ` <span class="source-tag source-${sourceClass(status)}">[${status}]</span>` : "";
 const valueWithSource = (value, status) =>
   `<span class="value-source"><span>${value}</span>${sourceTag(status)}</span>`;
 const formatUnitValue = (value, unit, digits = 2) => {
