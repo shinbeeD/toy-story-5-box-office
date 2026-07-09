@@ -1,5 +1,5 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-07-09 12:39 JST",
+  "updatedAt": "2026-07-09 15:56 JST",
   "dataThrough": "2026-07-07",
   "headline": "世界累計 $776.01M、$1Bまであと$223.99M。日本は10日50億チャレンジへ",
   "summary": {
@@ -68,24 +68,6 @@ window.BOX_OFFICE_DATA = {
       "sourceStatus": "CALC"
     },
     "dailyTrend": [
-      {
-        "date": "2026/07/02",
-        "snapshotTime": "未取得",
-        "sourceScope": "データなし",
-        "rank": null,
-        "trackedSales": null,
-        "seats": null,
-        "seatOccupancy": null,
-        "estimatedFullDaySales": null,
-        "estimatedGrossYen": null,
-        "sourceStatus": "TRACKING",
-        "calibration": null,
-        "yenPerTrackedPoint": null,
-        "weekdayFactor": null,
-        "coverage": 65.7,
-        "progressFactor": null,
-        "status": "販売データなし"
-      },
       {
         "date": "2026/07/03",
         "snapshotTime": "最終",
@@ -990,7 +972,8 @@ window.BOX_OFFICE_DATA = {
     "第3週末は$30.32Mで前週比57.0%減。祝日週末後の平日推移を注視。",
     "7/7の日次興収は$6.69M、前週同曜日比47.0%減。競合ファミリー作品の流入下でも累計は着実に上積み。",
     "海外累計は$399.13M、世界比51.4%。日本累計$14.56Mの反映で海外比率が上昇。",
-    "日本速報は2026/07/08 最終時点で販売125,749、当日推定興収は約2.18億円（独立系含む）。",
+    "日本速報は2026/07/08 最終時点で販売125,749P、当日推定興収は約2.18億円（独立系含む）。水曜サービスデー補正込みで2.03〜2.35億円レンジ。",
+    "日本10日50億チャレンジはBase 49.3億円、Bull 50.5億円。週末のファミリー需要と箱維持が突破ライン。",
     "同日比較には公開曜日・祝日・上映館数・為替差があるため、順位だけでなく下落率と海外比率を合わせて見る。"
   ],
   "competition": {
@@ -1013,6 +996,7 @@ window.BOX_OFFICE_DATA = {
       "title": "I Knew It, I Knew You",
       "artist": "Taylor Swift",
       "chart": "Billboard Hot 100（米国）",
+      "releaseDate": "発売日",
       "peak": 1,
       "latest": 2,
       "points": [
@@ -1035,6 +1019,7 @@ window.BOX_OFFICE_DATA = {
       "title": "Toy Story 5 – Original Soundtrack",
       "artist": "Randy Newman / Original Soundtrack",
       "chart": "Official Classical Albums（英国）",
+      "releaseDate": "発売日",
       "peak": 3,
       "latest": 3,
       "points": [
@@ -1068,24 +1053,6 @@ window.BOX_OFFICE_DATA = {
   "dayMatchedDay": 19,
   "weekendMatchedWeek": 3,
   "japanDailyTrend": [
-    {
-      "date": "2026/07/02",
-      "snapshotTime": "未取得",
-      "sourceScope": "データなし",
-      "rank": null,
-      "trackedSales": null,
-      "seats": null,
-      "seatOccupancy": null,
-      "estimatedFullDaySales": null,
-      "estimatedGrossYen": null,
-      "sourceStatus": "TRACKING",
-      "calibration": null,
-      "yenPerTrackedPoint": null,
-      "weekdayFactor": null,
-      "coverage": 65.7,
-      "progressFactor": null,
-      "status": "販売データなし"
-    },
     {
       "date": "2026/07/03",
       "snapshotTime": "最終",
@@ -1574,5 +1541,5 @@ window.BOX_OFFICE_DATA = {
     "note": "公式3日間興収24.151億円にP値推定を合わせるための補正係数。P値は全国動員そのものではなく販売数指標として扱う。"
   },
   "japanFlashDate": "2026/07/08",
-  "japanTrackingUpdatedAt": "2026-07-09 12:39 JST"
+  "japanTrackingUpdatedAt": "2026-07-09 12:36 JST"
 };
