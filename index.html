@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Toy Story 5 Box Office HQ</title>
-  <link rel="stylesheet" href="styles.css?v=20260709-8" />
+  <link rel="stylesheet" href="styles.css?v=20260709-10" />
   <style>.world-peer-series path{stroke-width:3!important}.world-trajectory-svg .current-world path{stroke-width:5!important}.endpoint-label{font-size:12px;font-weight:900;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}.world-slope-title{display:flex;justify-content:space-between;gap:12px;margin:18px 8px 8px;color:#123b69;font-size:12px}.world-slope-title span{color:#6f8295;font-size:11px}.world-peer-slope{background:linear-gradient(180deg,#fffaf0,#fff)}@media(max-width:520px){.world-slope-title{align-items:flex-start;flex-direction:column}}</style>
   <style>.market-peer-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:10px 12px;border-radius:10px;background:#eef8ff;color:#123b69}.market-peer-heading span{color:#6f8295;font-size:10px}.market-peer-heading b{font-size:13px}.mini-race-value{white-space:nowrap}</style>
 </head>
@@ -24,7 +24,7 @@
       <div class="hero-copy">
         <div class="eyebrow">TO INFINITY AND BEYOND THE BOX OFFICE</div>
         <h1 id="headline"></h1>
-        <p>世界の劇場をめぐる興行収入アドベンチャー。毎朝6:00更新。</p>
+        <p>公式値・業界データ・P値観測・分析予測を分けて見る興行収入アドベンチャー。</p>
         <div class="updated" id="updated"></div>
       </div>
       <div class="billion-card">
@@ -46,9 +46,39 @@
 
     <section id="overview" class="tab-page active">
       <div class="kpi-grid" id="kpis"></div>
+      <article class="panel update-meta-panel">
+        <div class="section-title"><span>🧭</span><div><small>DATA STATUS</small><h2>更新・データ対象日</h2></div></div>
+        <div id="update-meta"></div>
+      </article>
+      <div class="challenge-grid">
+        <article class="panel challenge-panel day10-panel">
+          <div class="section-title"><span>🎯</span><div><small>JAPAN DAY 10 WATCH</small><h2>10日50億チャレンジ</h2></div></div>
+          <div id="japan-day10-watch"></div>
+        </article>
+        <article class="panel challenge-panel usd-panel">
+          <div class="section-title"><span>💵</span><div><small>JAPAN $100M MISSION</small><h2>日本1億ドルチャレンジ</h2></div></div>
+          <div id="japan-usd-mission"></div>
+        </article>
+      </div>
+      <article class="panel scenario-panel">
+        <div class="section-title"><span>🇯🇵</span><div><small>JAPAN FINAL FORECAST</small><h2>日本最終興収シナリオ</h2></div></div>
+        <div id="japan-final-scenarios"></div>
+      </article>
+      <article class="panel checkpoint-panel">
+        <div class="section-title"><span>🌻</span><div><small>SUMMER CHECKPOINTS</small><h2>170億ルートの山場</h2></div></div>
+        <div id="summer-checkpoints"></div>
+      </article>
+      <article class="panel competition-watch-panel">
+        <div class="section-title"><span>⚔️</span><div><small>COMPETITION WATCH</small><h2>北米・日本 競合状況</h2></div></div>
+        <div id="competition-watch"></div>
+      </article>
       <article class="panel japan-flash-panel">
         <div class="section-title"><span>🇯🇵</span><div><small>JAPAN SAME-DAY ESTIMATE</small><h2>日本・当日推定興収</h2></div></div>
         <div id="japan-flash"></div>
+      </article>
+      <article class="panel pvalue-panel">
+        <div class="section-title"><span>🧮</span><div><small>P-VALUE GUIDE</small><h2>P値とは？</h2></div></div>
+        <div id="pvalue-guide"></div>
       </article>
       <article class="panel chart-panel japan-daily-panel">
         <div class="section-title"><span>🍿</span><div><small>LAST 7 DAYS</small><h2>日本 日次興収（推定）</h2></div></div>
@@ -58,10 +88,10 @@
       <article class="panel japan-trend-panel">
         <div class="section-title"><span>📊</span><div><small>JAPAN ESTIMATE LOG</small><h2>公式発表前の日本・日別推定興収推移</h2></div></div>
         <div class="table-wrap"><table id="japan-estimate-table"></table></div>
-        <p class="data-note">販売速報から推定した当日興収の推移です。公式日本累計とは別扱いで、取得館率・時刻進捗・平均単価レンジにより後日ぶれる可能性があります。</p>
+        <p class="data-note">販売速報から推定した当日興収の推移です。7/3〜7/5は公式3日間興収24.151億円に整合するよう固定し、以降はP値補正・曜日補正で概算します。公式日本累計とは別扱いです。</p>
       </article>
       <article class="panel forecast-panel">
-        <div class="section-title"><span>🔮</span><div><small>FINAL WORLDWIDE FORECAST</small><h2>最終世界興行収入 見込み</h2></div></div>
+        <div class="section-title"><span>🔮</span><div><small>FINAL WORLDWIDE SCENARIOS</small><h2>最終世界興行収入 シナリオ</h2></div></div>
         <div id="forecast-card"></div>
       </article>
       <div class="content-grid">
@@ -77,7 +107,7 @@
         </article>
       </div>
       <article class="panel">
-        <div class="section-title"><span>🏁</span><div><small>DAY 14 RACE</small><h2>公開後同日・北米累計比較</h2></div></div>
+        <div class="section-title"><span>🏁</span><div><small>NORTH AMERICA DAY RACE</small><h2>公開後同日・北米累計比較</h2></div></div>
         <div class="race-chart" id="race-chart"></div>
       </article>
     </section>
@@ -91,7 +121,7 @@
       <article class="panel trajectory-panel">
         <div class="section-title"><span>🛸</span><div><small>BOX OFFICE FLIGHT PATH</small><h2>現状比較と、この先の推移イメージ</h2></div></div>
         <div id="trajectory-chart"></div>
-        <p class="data-note">全作品の実線は北米実績。比較5作品は最終累計まで確定値、Day 17以降の黄色い破線だけがトイ・ストーリー5の分析イメージで、公式予測ではありません。</p>
+        <p class="data-note">全作品の実線は北米実績。比較5作品は最終累計まで確定値、最新実績以降の黄色い破線だけがトイ・ストーリー5の分析イメージで、公式予測ではありません。</p>
       </article>
       <article class="panel worldwide-trend-panel">
         <div class="section-title"><span>🌐</span><div><small>WORLDWIDE JOURNEY LOG</small><h2>世界累計の公表値推移</h2></div></div>
@@ -99,7 +129,7 @@
         <div id="worldwide-trend-chart"></div>
         <div id="world-peer-slope-chart"></div>
         <div class="table-wrap"><table id="worldwide-trend-table"></table></div>
-        <p class="data-note">上段はTS5の公表値推移。下段は各作品の「公開週末」と「最終」の2点だけを結ぶ端点比較です。途中の線は日次興収や同日累計を表さず、線の交差から途中時点の優劣は判断できません。</p>
+        <p class="data-note">比較作品の線は「公開週末」と「最終興収」を結んだ参考線です。日次推移ではありません。Comparison lines connect opening weekend and final total only. They are not daily trajectories.</p>
       </article>
       <article class="panel"><div class="section-title"><span>🏆</span><div><small>DAY-MATCHED</small><h2 id="day-match-title">公開後同日 比較</h2></div></div><div class="table-wrap"><table id="compare-table"></table></div></article>
       <article class="panel"><div class="section-title"><span>📉</span><div><small>WEEKEND-MATCHED</small><h2 id="weekend-match-title">同週末 比較</h2></div></div><div class="table-wrap"><table id="weekend-compare-table"></table></div></article>
@@ -134,12 +164,12 @@
     </section>
 
     <section id="sources" class="tab-page">
-      <article class="panel"><div class="section-title"><span>🔎</span><div><small>DOUBLE CHECKED</small><h2>情報源クロスチェック</h2></div></div><div class="table-wrap"><table id="checks-table"></table></div><div class="source-links" id="source-links"></div></article>
+      <article class="panel"><div class="section-title"><span>🔎</span><div><small>DOUBLE CHECKED</small><h2>情報源クロスチェック</h2></div></div><div id="source-status-legend"></div><div class="table-wrap"><table id="checks-table"></table></div><div class="source-links" id="source-links"></div><div id="source-categories"></div></article>
     </section>
   </main>
 
   <footer><span>★</span> BOX OFFICE HQ — BUILT FOR THE TOY BOX <span>★</span></footer>
-  <script src="data.js?v=20260709-8"></script>
-  <script src="app.js?v=20260709-8"></script>
+  <script src="data.js?v=20260709-10"></script>
+  <script src="app.js?v=20260709-10"></script>
 </body>
 </html>
