@@ -1,5 +1,5 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-07-09 09:27 JST",
+  "updatedAt": "2026-07-09 09:59 JST",
   "dataThrough": "2026-07-07",
   "headline": "世界累計 $776.01M。日本累計$14.56Mも反映、北米は公開19日目で$376.88M",
   "summary": {
@@ -63,6 +63,92 @@ window.BOX_OFFICE_DATA = {
       "high": 3.35
     },
     "dailyTrend": [
+      {
+        "date": "2026/07/02",
+        "snapshotTime": "未取得",
+        "sourceScope": "データなし",
+        "rank": null,
+        "trackedSales": null,
+        "seats": null,
+        "seatOccupancy": null,
+        "estimatedFullDaySales": null,
+        "estimatedGrossYen": null,
+        "coverage": 65.7,
+        "progressFactor": null,
+        "status": "販売データなし"
+      },
+      {
+        "date": "2026/07/03",
+        "snapshotTime": "最終",
+        "sourceScope": "独立系含む",
+        "rank": 1,
+        "trackedSales": 248001,
+        "seats": 1023885,
+        "seatOccupancy": 24.2,
+        "estimatedFullDaySales": 248001,
+        "estimatedGrossYen": {
+          "low": 5.28,
+          "base": 5.89,
+          "high": 6.61
+        },
+        "coverage": 65.7,
+        "progressFactor": 1,
+        "status": "最終販売速報"
+      },
+      {
+        "date": "2026/07/04",
+        "snapshotTime": "最終",
+        "sourceScope": "独立系含む",
+        "rank": 1,
+        "trackedSales": 481038,
+        "seats": 1133538,
+        "seatOccupancy": 42.4,
+        "estimatedFullDaySales": 481038,
+        "estimatedGrossYen": {
+          "low": 10.25,
+          "base": 11.42,
+          "high": 12.81
+        },
+        "coverage": 65.7,
+        "progressFactor": 1,
+        "status": "最終販売速報"
+      },
+      {
+        "date": "2026/07/05",
+        "snapshotTime": "最終",
+        "sourceScope": "独立系含む",
+        "rank": 1,
+        "trackedSales": 564063,
+        "seats": 1014711,
+        "seatOccupancy": 55.6,
+        "estimatedFullDaySales": 564063,
+        "estimatedGrossYen": {
+          "low": 12.02,
+          "base": 13.39,
+          "high": 15.02
+        },
+        "coverage": 65.7,
+        "progressFactor": 1,
+        "status": "最終販売速報"
+      },
+      {
+        "date": "2026/07/06",
+        "snapshotTime": "最終",
+        "sourceScope": "独立系含む",
+        "rank": 1,
+        "trackedSales": 133585,
+        "seats": 981497,
+        "seatOccupancy": 13.6,
+        "estimatedFullDaySales": 133585,
+        "estimatedGrossYen": {
+          "low": 2.85,
+          "base": 3.17,
+          "high": 3.56
+        },
+        "coverage": 65.7,
+        "progressFactor": 1,
+        "status": "最終販売速報"
+      },
       {
         "date": "2026/07/07",
         "snapshotTime": "最終",
@@ -909,6 +995,92 @@ window.BOX_OFFICE_DATA = {
   "dayMatchedDay": 19,
   "weekendMatchedWeek": 3,
   "japanDailyTrend": [
+    {
+      "date": "2026/07/02",
+      "snapshotTime": "未取得",
+      "sourceScope": "データなし",
+      "rank": null,
+      "trackedSales": null,
+      "seats": null,
+      "seatOccupancy": null,
+      "estimatedFullDaySales": null,
+      "estimatedGrossYen": null,
+      "coverage": 65.7,
+      "progressFactor": null,
+      "status": "販売データなし"
+    },
+    {
+      "date": "2026/07/03",
+      "snapshotTime": "最終",
+      "sourceScope": "独立系含む",
+      "rank": 1,
+      "trackedSales": 248001,
+      "seats": 1023885,
+      "seatOccupancy": 24.2,
+      "estimatedFullDaySales": 248001,
+      "estimatedGrossYen": {
+        "low": 5.28,
+        "base": 5.89,
+        "high": 6.61
+      },
+      "coverage": 65.7,
+      "progressFactor": 1,
+      "status": "最終販売速報"
+    },
+    {
+      "date": "2026/07/04",
+      "snapshotTime": "最終",
+      "sourceScope": "独立系含む",
+      "rank": 1,
+      "trackedSales": 481038,
+      "seats": 1133538,
+      "seatOccupancy": 42.4,
+      "estimatedFullDaySales": 481038,
+      "estimatedGrossYen": {
+        "low": 10.25,
+        "base": 11.42,
+        "high": 12.81
+      },
+      "coverage": 65.7,
+      "progressFactor": 1,
+      "status": "最終販売速報"
+    },
+    {
+      "date": "2026/07/05",
+      "snapshotTime": "最終",
+      "sourceScope": "独立系含む",
+      "rank": 1,
+      "trackedSales": 564063,
+      "seats": 1014711,
+      "seatOccupancy": 55.6,
+      "estimatedFullDaySales": 564063,
+      "estimatedGrossYen": {
+        "low": 12.02,
+        "base": 13.39,
+        "high": 15.02
+      },
+      "coverage": 65.7,
+      "progressFactor": 1,
+      "status": "最終販売速報"
+    },
+    {
+      "date": "2026/07/06",
+      "snapshotTime": "最終",
+      "sourceScope": "独立系含む",
+      "rank": 1,
+      "trackedSales": 133585,
+      "seats": 981497,
+      "seatOccupancy": 13.6,
+      "estimatedFullDaySales": 133585,
+      "estimatedGrossYen": {
+        "low": 2.85,
+        "base": 3.17,
+        "high": 3.56
+      },
+      "coverage": 65.7,
+      "progressFactor": 1,
+      "status": "最終販売速報"
+    },
     {
       "date": "2026/07/07",
       "snapshotTime": "最終",
