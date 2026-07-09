@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Toy Story 5 Box Office HQ</title>
-  <link rel="stylesheet" href="styles.css?v=20260709-11" />
+  <link rel="stylesheet" href="styles.css?v=20260709-12" />
   <style>.world-peer-series path{stroke-width:3!important}.world-trajectory-svg .current-world path{stroke-width:5!important}.endpoint-label{font-size:12px;font-weight:900;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}.world-slope-title{display:flex;justify-content:space-between;gap:12px;margin:18px 8px 8px;color:#123b69;font-size:12px}.world-slope-title span{color:#6f8295;font-size:11px}.world-peer-slope{background:linear-gradient(180deg,#fffaf0,#fff)}@media(max-width:520px){.world-slope-title{align-items:flex-start;flex-direction:column}}</style>
   <style>.market-peer-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:10px 12px;border-radius:10px;background:#eef8ff;color:#123b69}.market-peer-heading span{color:#6f8295;font-size:10px}.market-peer-heading b{font-size:13px}.mini-race-value{white-space:nowrap}</style>
 </head>
@@ -46,10 +46,6 @@
 
     <section id="overview" class="tab-page active">
       <div class="kpi-grid" id="kpis"></div>
-      <article class="panel update-meta-panel">
-        <div class="section-title"><span>🧭</span><div><small>DATA STATUS</small><h2>更新・データ対象日</h2></div></div>
-        <div id="update-meta"></div>
-      </article>
       <div class="challenge-grid">
         <article class="panel challenge-panel day10-panel">
           <div class="section-title"><span>🎯</span><div><small>JAPAN DAY 10 WATCH</small><h2>10日50億チャレンジ</h2></div></div>
@@ -64,6 +60,33 @@
         <div class="section-title"><span>🇯🇵</span><div><small>JAPAN FINAL FORECAST</small><h2>日本最終興収シナリオ</h2></div></div>
         <div id="japan-final-scenarios"></div>
       </article>
+      <article class="panel japan-flash-panel">
+        <div class="section-title"><span>🇯🇵</span><div><small>JAPAN SAME-DAY ESTIMATE</small><h2>今日の日本速報・当日推定</h2></div></div>
+        <p class="section-subnote">今日取得できたP値から当日興収を概算します。公式累計・BOMのUSD換算とは別枠です。</p>
+        <div id="japan-flash"></div>
+      </article>
+      <article class="panel update-meta-panel">
+        <div class="section-title"><span>🧭</span><div><small>DATA STATUS</small><h2>更新・データ対象日</h2></div></div>
+        <div id="update-meta"></div>
+      </article>
+      <article class="panel pvalue-panel">
+        <div class="section-title"><span>🧮</span><div><small>P-VALUE GUIDE</small><h2>P値とは？</h2></div></div>
+        <div id="pvalue-guide"></div>
+      </article>
+      <article class="panel chart-panel japan-daily-panel">
+        <div class="section-title"><span>🍿</span><div><small>JAPAN DAILY TREND</small><h2>直近7日の日次推定</h2></div></div>
+        <div class="bar-chart japan-bar-chart" id="japan-daily-chart"></div>
+        <p class="data-note">最新7日分を表示します。興行収入を見守りたい！の販売速報から当日興収を推定したグラフです。北米の日次興収とは異なり公式興収ではないため、日本公式値が出るまでの参考推移として見ます。</p>
+      </article>
+      <article class="panel japan-trend-panel">
+        <div class="section-title"><span>📊</span><div><small>JAPAN ESTIMATE LOG</small><h2>推定根拠ログ（P値・補正係数）</h2></div></div>
+        <div class="table-wrap"><table id="japan-estimate-table"></table></div>
+        <p class="data-note">販売速報から推定した当日興収の推移です。7/3〜7/5は公式3日間興収24.151億円に整合するよう固定し、以降はP値補正・曜日補正で概算します。公式日本累計とは別扱いです。</p>
+      </article>
+      <article class="panel forecast-panel">
+        <div class="section-title"><span>🔮</span><div><small>FINAL WORLDWIDE SCENARIOS</small><h2>最終世界興行収入 シナリオ</h2></div></div>
+        <div id="forecast-card"></div>
+      </article>
       <article class="panel checkpoint-panel">
         <div class="section-title"><span>🌻</span><div><small>SUMMER CHECKPOINTS</small><h2>170億ルートの山場</h2></div></div>
         <div id="summer-checkpoints"></div>
@@ -71,28 +94,6 @@
       <article class="panel competition-watch-panel">
         <div class="section-title"><span>⚔️</span><div><small>COMPETITION WATCH</small><h2>北米・日本 競合状況</h2></div></div>
         <div id="competition-watch"></div>
-      </article>
-      <article class="panel japan-flash-panel">
-        <div class="section-title"><span>🇯🇵</span><div><small>JAPAN SAME-DAY ESTIMATE</small><h2>日本・当日推定興収</h2></div></div>
-        <div id="japan-flash"></div>
-      </article>
-      <article class="panel pvalue-panel">
-        <div class="section-title"><span>🧮</span><div><small>P-VALUE GUIDE</small><h2>P値とは？</h2></div></div>
-        <div id="pvalue-guide"></div>
-      </article>
-      <article class="panel chart-panel japan-daily-panel">
-        <div class="section-title"><span>🍿</span><div><small>LAST 7 DAYS</small><h2>日本 日次興収（推定）</h2></div></div>
-        <div class="bar-chart japan-bar-chart" id="japan-daily-chart"></div>
-        <p class="data-note">最新7日分を表示します。興行収入を見守りたい！の販売速報から当日興収を推定したグラフです。北米の日次興収とは異なり公式興収ではないため、日本公式値が出るまでの参考推移として見ます。</p>
-      </article>
-      <article class="panel japan-trend-panel">
-        <div class="section-title"><span>📊</span><div><small>JAPAN ESTIMATE LOG</small><h2>公式発表前の日本・日別推定興収推移</h2></div></div>
-        <div class="table-wrap"><table id="japan-estimate-table"></table></div>
-        <p class="data-note">販売速報から推定した当日興収の推移です。7/3〜7/5は公式3日間興収24.151億円に整合するよう固定し、以降はP値補正・曜日補正で概算します。公式日本累計とは別扱いです。</p>
-      </article>
-      <article class="panel forecast-panel">
-        <div class="section-title"><span>🔮</span><div><small>FINAL WORLDWIDE SCENARIOS</small><h2>最終世界興行収入 シナリオ</h2></div></div>
-        <div id="forecast-card"></div>
       </article>
       <div class="content-grid">
         <article class="panel chart-panel">
@@ -169,7 +170,7 @@
   </main>
 
   <footer><span>★</span> BOX OFFICE HQ — BUILT FOR THE TOY BOX <span>★</span></footer>
-  <script src="data.js?v=20260709-11"></script>
-  <script src="app.js?v=20260709-11"></script>
+  <script src="data.js?v=20260709-12"></script>
+  <script src="app.js?v=20260709-12"></script>
 </body>
 </html>
