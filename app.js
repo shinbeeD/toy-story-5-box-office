@@ -39,17 +39,19 @@ const jpOfficialNote = J.officialGrossUsd ? `公式日本累計は${money(J.offi
 document.querySelector('#japan-flash').innerHTML = `<div class="japan-flash-lead"><div><span class="flash-live">● ${J.sourceScope || '販売速報'}</span><b>${jpSnapshot}</b></div><strong>当日推定興収 ${yenText}</strong><small>${yenRange}</small></div><div class="japan-flash-stats"><div><small>取得館販売数</small><strong>${numberJa(J.trackedSales)}</strong><span>${J.status || 'チケット販売速報'}</span></div><div><small>デイリー順位</small><strong>${J.rank}位</strong><span>全作品中</span></div><div><small>取得座席・販売率</small><strong>${numberJa(J.seats)}</strong><span>${jpSeatCaption}</span></div><div><small>推定最終販売 / 取得率</small><strong>${J.estimatedFullDaySales ? numberJa(J.estimatedFullDaySales) : jpCoverageText}</strong><span>${J.estimatedFullDaySales ? `取得率 ${jpCoverageText}` : jpCoverageSub}</span></div></div><p class="japan-flash-note"><b>推定値です。</b>${J.method} ${jpOfficialNote}</p>`;
 const yenOku = v => v == null ? '未更新' : `¥${Number(v).toFixed(2)}億`;
 const japanTrend = D.japanDailyTrend || J.dailyTrend || [];
-const japanDailyPoints = japanTrend.filter(x => x.estimatedGrossYen?.base != null);
-const maxJapanDaily = japanDailyPoints.length ? Math.max(...japanDailyPoints.map(x => x.estimatedGrossYen.base)) : 1;
+const japanDailyPoints = japanTrend.slice(-7);
+const japanDailyValues = japanDailyPoints.map(x => x.estimatedGrossYen?.base).filter(v => v != null);
+const maxJapanDaily = japanDailyValues.length ? Math.max(...japanDailyValues) : 1;
 document.querySelector('#japan-daily-chart').innerHTML = japanDailyPoints.length
   ? japanDailyPoints.map((x, i) => {
-    const base = x.estimatedGrossYen.base;
+    const base = x.estimatedGrossYen?.base ?? null;
     const shortDate = x.date.replace(/^2026\//, '');
     const latest = i === japanDailyPoints.length - 1 || x.date === J.date;
-    return `<div class="bar-item ${latest ? 'highlight' : ''}"><div class="bar-value">${yenOku(base)}</div><div class="bar" style="height:${Math.max(12, base / maxJapanDaily * 185)}px"></div><div class="bar-label">${shortDate}</div><div class="bar-sub">${x.snapshotTime || '速報'}</div></div>`;
+    const noData = base == null;
+    return `<div class="bar-item ${latest ? 'highlight' : ''} ${noData ? 'no-data' : ''}"><div class="bar-value">${noData ? '未取得' : yenOku(base)}</div><div class="bar" style="height:${noData ? 12 : Math.max(12, base / maxJapanDaily * 185)}px"></div><div class="bar-label">${shortDate}</div><div class="bar-sub">${x.snapshotTime || '速報'}</div></div>`;
   }).join('')
   : `<div class="empty-market"><strong>日本 日次興収（推定）</strong><span>販売速報の取得後に棒グラフを表示します</span></div>`;
-document.querySelector('#japan-estimate-table').innerHTML = `<thead><tr><th>日付</th><th>速報時点</th><th>販売数</th><th>推定興収</th><th>レンジ</th><th>状態</th></tr></thead><tbody>${japanTrend.map(x => `<tr class="${x.date === J.date ? 'current' : ''}"><td>${x.date}</td><td>${x.snapshotTime}<small class="row-note">${x.sourceScope || ''}</small></td><td class="num">${numberJa(x.trackedSales)}</td><td class="num world-total">${yenOku(x.estimatedGrossYen?.base)}</td><td class="num">${x.estimatedGrossYen ? `${yenOku(x.estimatedGrossYen.low)}〜${yenOku(x.estimatedGrossYen.high)}` : '未更新'}</td><td><span class="status-pill">${x.status || '販売速報'}</span></td></tr>`).join('')}</tbody>`;
+document.querySelector('#japan-estimate-table').innerHTML = `<thead><tr><th>日付</th><th>速報時点</th><th>販売数</th><th>推定興収</th><th>レンジ</th><th>状態</th></tr></thead><tbody>${japanTrend.map(x => `<tr class="${x.date === J.date ? 'current' : ''}"><td>${x.date}</td><td>${x.snapshotTime}<small class="row-note">${x.sourceScope || ''}</small></td><td class="num">${x.trackedSales == null ? '未取得' : numberJa(x.trackedSales)}</td><td class="num world-total">${yenOku(x.estimatedGrossYen?.base)}</td><td class="num">${x.estimatedGrossYen ? `${yenOku(x.estimatedGrossYen.low)}〜${yenOku(x.estimatedGrossYen.high)}` : '未更新'}</td><td><span class="status-pill">${x.status || '販売速報'}</span></td></tr>`).join('')}</tbody>`;
 const billion = v => `$${(v / 1000).toFixed(2)}B`;
 document.querySelector('#forecast-card').innerHTML = `<div class="forecast-layout"><div class="forecast-main"><small>中心見込み</small><strong>${billion(D.forecast.base)}</strong><span>${D.forecast.confidence}・モデル推定</span></div><div class="forecast-range"><div class="forecast-labels"><span>下限 ${billion(D.forecast.low)}</span><span>上限 ${billion(D.forecast.high)}</span></div><div class="forecast-track"><i class="forecast-marker"></i></div><div class="forecast-basis">${D.forecast.basis}</div></div></div>`;
 
