@@ -1,14 +1,14 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-07-11 09:12 JST",
-  "dataThrough": "2026-07-08",
-  "headline": "世界累計 $784.40M、$1Bまであと$215.60M。日本は10日50億チャレンジへ",
+  "updatedAt": "2026-07-12 08:39 JST",
+  "dataThrough": "2026-07-10",
+  "headline": "世界累計 $790.10M、$1Bまであと$209.90M。日本は10日50億チャレンジへ",
   "summary": {
-    "worldwide": 784.400814,
-    "domestic": 385.27272,
+    "worldwide": 790.100814,
+    "domestic": 390.97272,
     "international": 399.128094,
-    "latestDaily": 4.477111,
-    "worldDelta": 8.388841,
-    "billionProgress": 78.4,
+    "latestDaily": 5.7,
+    "worldDelta": 5.7,
+    "billionProgress": 79,
     "sourceStatus": "TN"
   },
   "forecast": {
@@ -35,7 +35,7 @@ window.BOX_OFFICE_DATA = {
       "high": 2.21,
       "sourceStatus": "CALC"
     },
-    "status": "Box Office Mojoの日本累計と、興行収入を見守りたい！の当日販売速報を併記。",
+    "status": "Box Office Mojoで日本累計が公式反映。販売速報は前回値として保持。",
     "method": "P値を全国動員そのものとは扱わず、公式3日間興収24.151億円に合わせた補正係数と曜日補正で興収換算した当日推定値。公式累計とは別扱いです。",
     "snapshotTime": "最終",
     "showings": 3779,
@@ -243,7 +243,7 @@ window.BOX_OFFICE_DATA = {
       "Day 10",
       "Day 14",
       "Day 17",
-      "Day 20",
+      "Day 22",
       "Day 24",
       "最終"
     ],
@@ -258,7 +258,7 @@ window.BOX_OFFICE_DATA = {
           298.07067,
           335.34869,
           365.668929,
-          381.36099,
+          390.97272,
           null,
           null
         ],
@@ -273,7 +273,7 @@ window.BOX_OFFICE_DATA = {
           null,
           null,
           null,
-          381.36099,
+          390.97272,
           430.5,
           525
         ],
@@ -288,7 +288,7 @@ window.BOX_OFFICE_DATA = {
           356.393666,
           411.906043,
           469.426251,
-          496.549519,
+          514.42693,
           534.138158,
           652.980194
         ]
@@ -316,7 +316,7 @@ window.BOX_OFFICE_DATA = {
           288.845131,
           302.924901,
           338.090515,
-          345.60158,
+          351.69836,
           366.43302,
           477.373578
         ]
@@ -330,7 +330,7 @@ window.BOX_OFFICE_DATA = {
           238.69014,
           null,
           306.117899,
-          321.273472,
+          331.958027,
           346.650213,
           434.038008
         ]
@@ -344,7 +344,7 @@ window.BOX_OFFICE_DATA = {
           187.764031,
           227.546387,
           238.930188,
-          260.59438,
+          266.223784,
           272.34481,
           428.13016
         ]
@@ -452,17 +452,20 @@ window.BOX_OFFICE_DATA = {
       "worldwide": 784.400814,
       "increase": 8.388841,
       "status": "The Numbers更新値",
+      "latest": false
+    },
+    {
+      "date": "7/10",
+      "label": "最新公表",
+      "domestic": 390.97272,
+      "international": 399.128094,
+      "worldwide": 790.100814,
+      "increase": 5.7,
+      "status": "The Numbers更新値",
       "latest": true
     }
   ],
   "daily": [
-    {
-      "date": "7/2",
-      "gross": 8.605736,
-      "dod": 9,
-      "wow": -32,
-      "cumulative": 335.34869
-    },
     {
       "date": "7/3",
       "gross": 13.568322,
@@ -504,6 +507,13 @@ window.BOX_OFFICE_DATA = {
       "dod": -33,
       "wow": -43,
       "cumulative": 381.36099
+    },
+    {
+      "date": "7/10",
+      "gross": 5.7,
+      "dod": -58,
+      "wow": null,
+      "cumulative": 390.97272
     }
   ],
   "weekends": [
@@ -532,14 +542,14 @@ window.BOX_OFFICE_DATA = {
   "comparisons": [
     {
       "title": "インサイド・ヘッド2",
-      "cumulative": 496.549519,
-      "difference": 115.188529,
-      "index": 130.2,
+      "cumulative": 514.42693,
+      "difference": 123.45421,
+      "index": 131.6,
       "rank": 1
     },
     {
       "title": "トイ・ストーリー5",
-      "cumulative": 381.36099,
+      "cumulative": 390.97272,
       "difference": 0,
       "index": 100,
       "current": true,
@@ -547,23 +557,23 @@ window.BOX_OFFICE_DATA = {
     },
     {
       "title": "アナと雪の女王2",
-      "cumulative": 345.60158,
-      "difference": -35.75941,
-      "index": 90.6,
+      "cumulative": 351.69836,
+      "difference": -39.27436,
+      "index": 90,
       "rank": 3
     },
     {
       "title": "トイ・ストーリー4",
-      "cumulative": 321.273472,
-      "difference": -60.087518,
-      "index": 84.2,
+      "cumulative": 331.958027,
+      "difference": -59.014693,
+      "index": 84.9,
       "rank": 4
     },
     {
       "title": "ズートピア2",
-      "cumulative": 260.59438,
-      "difference": -120.76661,
-      "index": 68.3,
+      "cumulative": 266.223784,
+      "difference": -124.748936,
+      "index": 68.1,
       "rank": 5
     }
   ],
@@ -935,10 +945,10 @@ window.BOX_OFFICE_DATA = {
   "checks": [
     {
       "metric": "北米累計",
-      "adopted": 385.27272,
+      "adopted": 390.97272,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
-      "alternate": 385.27272,
+      "alternate": 390.97272,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
       "difference": 0,
@@ -959,10 +969,10 @@ window.BOX_OFFICE_DATA = {
     },
     {
       "metric": "世界累計",
-      "adopted": 784.400814,
+      "adopted": 790.100814,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
-      "alternate": 783.27272,
+      "alternate": 788.97272,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
       "difference": 1.128094,
@@ -970,8 +980,8 @@ window.BOX_OFFICE_DATA = {
       "note": "The Numbersを採用。BOMとの差は主に更新時刻差。BOMは国別確認に使用。"
     },
     {
-      "metric": "7/8北米日次",
-      "adopted": 4.477111,
+      "metric": "7/10北米日次",
+      "adopted": 5.7,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
       "alternate": null,
@@ -1000,10 +1010,10 @@ window.BOX_OFFICE_DATA = {
     }
   ],
   "insights": [
-    "公開20日目の北米累計は$381.36M。同日比較では5作品中2位。",
+    "公開22日目の北米累計は$390.97M。同日比較では5作品中2位。",
     "第3週末は$30.32Mで前週比57.0%減。祝日週末後の平日推移を注視。",
-    "7/8の日次興収は$4.48M、前週同曜日比43.0%減。競合ファミリー作品の流入下でも累計は着実に上積み。",
-    "海外累計は$399.13M、世界比50.9%。日本累計$14.96Mの反映で海外比率が上昇。",
+    "7/10の日次興収は$5.70M、前週同曜日比未更新。競合ファミリー作品の流入下でも累計は着実に上積み。",
+    "海外累計は$399.13M、世界比50.5%。日本累計$14.96Mの反映で海外比率が上昇。",
     "日本速報は2026/07/10 最終時点で販売110,874、当日推定興収は約2.07億円（独立系含む）。",
     "同日比較には公開曜日・祝日・上映館数・為替差があるため、順位だけでなく下落率と海外比率を合わせて見る。"
   ],
@@ -1081,7 +1091,7 @@ window.BOX_OFFICE_DATA = {
       "url": "https://apnews.com/"
     }
   ],
-  "dayMatchedDay": 20,
+  "dayMatchedDay": 22,
   "weekendMatchedWeek": 3,
   "japanDailyTrend": [
     {
@@ -1239,7 +1249,7 @@ window.BOX_OFFICE_DATA = {
       "status": "最終販売速報"
     }
   ],
-  "worldDataThrough": "2026-07-08",
+  "worldDataThrough": "2026-07-10",
   "sourceStatusLegend": [
     {
       "code": "OFFICIAL",
