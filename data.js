@@ -1329,6 +1329,17 @@ window.BOX_OFFICE_DATA = {
     "title": "10日50億チャレンジ",
     "targetYenBillion": 50,
     "sourceStatus": "CALC",
+    "currentEstimate": {
+      "label": "10日終了時点 推定",
+      "date": "2026/07/12",
+      "value": 48.981,
+      "low": 47.701,
+      "high": 50.741,
+      "remainingToTarget": 1.019,
+      "progress": 97.962,
+      "status": "本線は僅差で50億未達。上振れレンジなら突破圏",
+      "sourceStatus": "CALC"
+    },
     "items": [
       {
         "label": "公式初週3日間",
@@ -1343,26 +1354,26 @@ window.BOX_OFFICE_DATA = {
         "sourceStatus": "SNS_EST"
       },
       {
-        "label": "6日目終了推定",
-        "valueRange": "30.8〜31.0",
+        "label": "4〜8日目 平日上積み",
+        "value": 10.29,
         "unit": "JPY billion",
         "sourceStatus": "CALC"
       },
       {
-        "label": "7日目終了予測",
-        "valueRange": "32.2〜32.7",
+        "label": "2週目土日上積み",
+        "value": 14.54,
         "unit": "JPY billion",
         "sourceStatus": "CALC"
       },
       {
-        "label": "2週目金土日予測",
-        "valueRange": "16.5〜17.8",
+        "label": "10日累計 本線推定",
+        "value": 48.981,
         "unit": "JPY billion",
         "sourceStatus": "CALC"
       },
       {
-        "label": "10日累計予測",
-        "valueRange": "48.8〜50.5",
+        "label": "10日累計 レンジ",
+        "valueRange": "47.7〜50.7",
         "unit": "JPY billion",
         "sourceStatus": "CALC"
       }
@@ -1370,30 +1381,30 @@ window.BOX_OFFICE_DATA = {
     "scenarios": [
       {
         "label": "Conservative",
-        "value": 48,
-        "status": "未達",
+        "value": 47.7,
+        "status": "下振れ未達",
         "sourceStatus": "CALC",
-        "remainingToTarget": 2,
-        "progress": 96
+        "remainingToTarget": 2.3,
+        "progress": 95.4
       },
       {
         "label": "Base",
-        "value": 49.3,
-        "status": "ほぼ接近",
+        "value": 49,
+        "status": "本線は僅差未達",
         "sourceStatus": "CALC",
-        "remainingToTarget": 0.7,
-        "progress": 98.6
+        "remainingToTarget": 1,
+        "progress": 98
       },
       {
         "label": "Bull",
-        "value": 50.5,
-        "status": "突破",
+        "value": 50.7,
+        "status": "上振れなら突破",
         "sourceStatus": "CALC",
-        "remainingToTarget": -0.5,
-        "progress": 101
+        "remainingToTarget": -0.7,
+        "progress": 101.4
       }
     ],
-    "note": "公式3日間24.151億円を起点に、4日目以降はP値補正・曜日補正で推定。公式予測ではありません。"
+    "note": "公式3日間24.151億円を起点に、4日目以降はP値補正・曜日補正で推定。7/12までのP値推定では本線49.0億円前後、50億は公式発表待ちの僅差判定です。"
   },
   "japanUsdMission": {
     "title": "日本1億ドルチャレンジ",
@@ -1402,6 +1413,51 @@ window.BOX_OFFICE_DATA = {
     "usd100LineYenBillion": 162,
     "fujiiForecastYenBillion": 170,
     "fujiiForecastUsdMillion": 104.9,
+    "current": {
+      "label": "10日終了推定",
+      "date": "2026/07/12",
+      "yenBillion": 48.981,
+      "usdMillion": 30.2,
+      "progressToUsd100": 30.2,
+      "remainingYenBillion": 113.019,
+      "requiredMultiplier": 3.31,
+      "sourceStatus": "CALC"
+    },
+    "routes": [
+      {
+        "label": "Conservative",
+        "range": "120〜130億円",
+        "maxYenBillion": 130,
+        "status": "$100M未達",
+        "note": "通常減速なら届かない",
+        "sourceStatus": "CALC"
+      },
+      {
+        "label": "Base",
+        "range": "135〜150億円",
+        "maxYenBillion": 150,
+        "status": "$100M手前",
+        "note": "堅調でも162億には届きにくい",
+        "sourceStatus": "CALC"
+      },
+      {
+        "label": "Bull",
+        "range": "150〜160億円",
+        "maxYenBillion": 160,
+        "status": "ほぼ到達圏",
+        "note": "為替次第では接近",
+        "sourceStatus": "CALC"
+      },
+      {
+        "label": "Fujii Forecast",
+        "range": "170億円",
+        "maxYenBillion": 170,
+        "status": "$100M突破",
+        "note": "強気上振れルート",
+        "sourceStatus": "CALC",
+        "fujii": true
+      }
+    ],
     "milestones": [
       {
         "label": "100億円",
