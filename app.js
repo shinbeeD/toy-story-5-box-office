@@ -39,6 +39,29 @@ const formatScenarioValue = (item) => {
   }
   return formatUnitValue(item.value, item.unit, item.value >= 100 ? 1 : 3).replace(".000", "");
 };
+const getJapanDay10Estimate = () => {
+  const watch = D.japanDay10Watch || {};
+  if (watch.currentEstimate) return watch.currentEstimate;
+  const opening = watch.items?.find((item) => item.label.includes("公式初週"))?.value || 0;
+  const trend = D.japanDailyTrend || J.dailyTrend || [];
+  const afterOpening = trend.filter((row) => row.date >= "2026/07/06");
+  const sum = (key) =>
+    afterOpening.reduce((total, row) => total + Number(row.estimatedGrossYen?.[key] || 0), opening);
+  const base = sum("base");
+  const target = watch.targetYenBillion || 50;
+  return {
+    label: "10日終了時点 推定",
+    date: D.japanFlashDate || J.date,
+    value: base,
+    low: sum("low"),
+    high: sum("high"),
+    remainingToTarget: target - base,
+    progress: target ? (base / target) * 100 : 0,
+    status: base >= target ? "本線で突破" : "本線は僅差で未達",
+    sourceStatus: "CALC",
+  };
+};
+const rangeTextOku = (low, high, digits = 1) => `${Number(low || 0).toFixed(digits)}〜${Number(high || 0).toFixed(digits)}億円`;
 const trackingTimeLabel = (label) => {
   if (!label) return "速報";
   if (label === "最終") return "P値最終";
@@ -120,35 +143,63 @@ const renderJapanDay10Watch = () => {
   const watch = D.japanDay10Watch;
   if (!watch) return;
   const target = watch.targetYenBillion || 50;
-  const base = watch.scenarios?.find((x) => x.label === "Base") || watch.scenarios?.[0];
-  const findItem = (needle) => watch.items?.find((item) => item.label.includes(needle));
-  const pathItems = [
-    { step: "公式3日", item: findItem("公式初週"), tone: "official" },
-    { step: "5日目", item: findItem("5日目"), tone: "estimate" },
-    { step: "7日目", item: findItem("7日目"), tone: "estimate" },
-    { step: "週末上積み", item: findItem("2週目"), tone: "weekend" },
-    { step: "10日到達", item: findItem("10日累計"), tone: "goal" },
-  ].filter((x) => x.item);
+  const current = getJapanDay10Estimate();
+  const baseValue = Number(current.value || 0);
+  const low = Number(current.low || baseValue);
+  const high = Number(current.high || baseValue);
+  const remainingValue = target - baseValue;
   const remaining =
-    base?.remainingToTarget > 0
-      ? `50億まであと${base.remainingToTarget.toFixed(1)}億円`
-      : `${Math.abs(base?.remainingToTarget || 0).toFixed(1)}億円超え`;
+    remainingValue > 0
+      ? `50億まであと${remainingValue.toFixed(1)}億円`
+      : `${Math.abs(remainingValue).toFixed(1)}億円超え`;
+  const range = rangeTextOku(low, high, 1);
+  const official = watch.items?.find((item) => item.label.includes("公式初週"));
+  const weekday = watch.items?.find((item) => item.label.includes("平日"));
+  const weekend = watch.items?.find((item) => item.label.includes("土日"));
+  const estimateStatus = baseValue >= target ? "突破" : high >= target ? "公式待ち・上振れなら突破" : "未達寄り";
+  const scenarioMax = Math.max(target, high, ...(watch.scenarios || []).map((item) => item.value || 0));
   setHTML(
     "#japan-day10-watch",
-    `<div class="day10-focus">
-      <div class="day10-score"><small>現在の本線</small><strong>${yenOku(base?.value, 1)}</strong><span>${remaining}</span></div>
-      <div class="day10-meter-panel"><div class="day10-meter"><i style="width:${Math.min(110, base?.progress || 0)}%"></i><b>${target}億ライン</b></div><p>Baseは50億目前。Bullなら突破、Conservativeなら少し届かない見立てです。</p></div>
+    `<div class="day10-result">
+      <div class="day10-result-main ${baseValue >= target ? "cleared" : "near"}">
+        <small>最新判定 / ${safe(current.date || D.japanFlashDate || J.date)}まで</small>
+        <strong>${yenOku(baseValue, 1)}</strong>
+        <span>${remaining}</span>
+        ${sourceTag(current.sourceStatus || "CALC")}
+      </div>
+      <div class="day10-result-rail">
+        <div class="rail-title"><b>50億ラインへの到達感</b><span>${estimateStatus}</span></div>
+        <div class="day10-rail">
+          <i style="width:${Math.min(100, (baseValue / target) * 100)}%"></i>
+          <em style="left:${Math.min(100, (target / Math.max(target, high)) * 100)}%">${target}億</em>
+        </div>
+        <p>推定レンジ ${range}。本線は僅差で50億に届かず、上振れ側なら突破圏です。</p>
+      </div>
     </div>
-    <div class="day10-path">${pathItems
+    <div class="day10-breakdown">
+      ${[
+        { label: "公式3日", value: official ? yenOku(official.value, 3) : "—", sub: "確定値", status: official?.sourceStatus || "OFFICIAL" },
+        { label: "4〜8日目", value: weekday ? yenOku(weekday.value, 1) : "—", sub: "平日上積み", status: weekday?.sourceStatus || "CALC" },
+        { label: "2週目土日", value: weekend ? yenOku(weekend.value, 1) : "—", sub: "再加速分", status: weekend?.sourceStatus || "CALC" },
+        { label: "10日推定", value: yenOku(baseValue, 1), sub: range, status: current.sourceStatus || "CALC", focus: true },
+      ]
+        .map(
+          (item) =>
+            `<div class="${item.focus ? "focus" : ""}"><small>${item.label}</small><strong>${item.value}</strong><span>${item.sub}</span>${sourceTag(item.status)}</div>`
+        )
+        .join("")}
+    </div>
+    <div class="day10-scenario-bars">${watch.scenarios
       .map(
-        ({ step, item, tone }) =>
-          `<div class="day10-node ${tone}"><small>${step}</small><strong>${formatScenarioValue(item)}</strong><span>${item.label}</span>${sourceTag(item.sourceStatus)}</div>`
-      )
-      .join("")}</div>
-    <div class="scenario-mini day10-scenario-focus">${watch.scenarios
-      .map(
-        (item) =>
-          `<div class="${item.label === "Base" ? "base" : ""} ${item.value >= target ? "hit" : item.value >= 48 ? "near" : ""}"><small>${item.label}</small><strong>${yenOku(item.value, 1)}</strong><span>${item.status}</span>${sourceTag(item.sourceStatus)}</div>`
+        (item) => {
+          const width = Math.min(100, ((item.value || 0) / scenarioMax) * 100);
+          const tone = item.value >= target ? "hit" : item.value >= 48 ? "near" : "";
+          return `<div class="day10-scenario-row ${tone}">
+            <span><b>${item.label}</b><small>${item.status}</small></span>
+            <div class="scenario-bar"><i style="width:${width}%"></i><em>${yenOku(item.value, 1)}</em></div>
+            ${sourceTag(item.sourceStatus)}
+          </div>`;
+        }
       )
       .join("")}</div>
     <p class="data-note">${watch.note}</p>`
@@ -159,23 +210,54 @@ renderJapanDay10Watch();
 const renderJapanUsdMission = () => {
   const mission = D.japanUsdMission;
   if (!mission) return;
+  const current = mission.current || {};
+  const currentYen = Number(current.yenBillion || getJapanDay10Estimate().value || 0);
+  const line = Number(mission.usd100LineYenBillion || 0);
+  const fx = Number(mission.fxYenPerUsd || 0);
+  const currentUsd = current.usdMillion || (fx ? (currentYen * 100) / fx : null);
+  const progress = line ? (currentYen / line) * 100 : 0;
+  const remaining = line - currentYen;
+  const routes = mission.routes || [];
+  const maxRoute = Math.max(mission.fujiiForecastYenBillion || 0, line || 0, ...routes.map((r) => r.maxYenBillion || 0));
   setHTML(
     "#japan-usd-mission",
-    `<div class="usd-focus-grid">
-      <div class="usd-assumption"><small>為替前提</small><strong>1ドル = ${mission.fxYenPerUsd}円</strong><span>概算換算</span></div>
-      <div class="usd-target-card highlight"><small>$100Mライン</small><strong>${yenOku(mission.usd100LineYenBillion, 1)}</strong><span>ここを超えると日本$100M</span></div>
-      <div class="usd-target-card fujii"><small>藤井予想</small><strong>${yenOku(mission.fujiiForecastYenBillion, 0)}</strong><span>約$${mission.fujiiForecastUsdMillion}M</span></div>
+    `<div class="usd-mission-summary">
+      <div class="usd-now">
+        <small>現在地 / ${safe(current.date || D.japanFlashDate || J.date)}</small>
+        <strong>${yenOku(currentYen, 1)}</strong>
+        <span>約$${Number(currentUsd || 0).toFixed(1)}M / $100Mの${pctText(progress)}</span>
+        ${sourceTag(current.sourceStatus || "CALC")}
+      </div>
+      <div class="usd-needed">
+        <small>$100Mライン</small>
+        <strong>${yenOku(line, 1)}</strong>
+        <span>あと${yenOku(remaining, 1)}・現在地から約${Number(current.requiredMultiplier || (line / currentYen)).toFixed(1)}倍</span>
+      </div>
     </div>
-    <div class="usd-milestone-strip">${mission.milestones
-      .map(
-        (m) =>
-          `<div class="usd-milestone-pill ${m.highlight ? "highlight" : ""} ${m.fujii ? "fujii" : ""}">
-            <small>${m.highlight ? "$100M" : m.fujii ? "強気" : "通過点"}</small>
-            <strong>${yenOku(m.value, m.value % 1 ? 1 : 0)}</strong>
-            <span>${m.label}</span>
-          </div>`
-      )
-      .join("")}</div>
+    <div class="usd-runway">
+      <div class="usd-runway-track">
+        <i style="width:${Math.min(100, progress)}%"></i>
+        <span class="now" style="left:${Math.min(100, progress)}%">現在</span>
+        <span class="line" style="left:${Math.min(100, (line / maxRoute) * 100)}%">$100M</span>
+        <span class="fujii" style="left:${Math.min(100, ((mission.fujiiForecastYenBillion || line) / maxRoute) * 100)}%">170億</span>
+      </div>
+      <div class="usd-runway-scale"><b>0</b><b>${yenOku(line, 0)}</b><b>${yenOku(mission.fujiiForecastYenBillion, 0)}</b></div>
+    </div>
+    <div class="usd-route-list">
+      ${(routes.length ? routes : mission.milestones || [])
+        .map((route) => {
+          const value = route.maxYenBillion || route.value;
+          const width = maxRoute ? Math.min(100, (value / maxRoute) * 100) : 0;
+          const reach = value >= line;
+          return `<div class="usd-route ${reach ? "reach" : ""} ${route.fujii ? "fujii" : ""}">
+            <div><b>${route.label}</b><span>${route.range || yenOku(value, value % 1 ? 1 : 0)}</span></div>
+            <div class="usd-route-bar"><i style="width:${width}%"></i><em>${route.status || (reach ? "$100M突破" : "$100M未達")}</em></div>
+            <p>${route.note || ""}</p>
+            ${sourceTag(route.sourceStatus || mission.sourceStatus)}
+          </div>`;
+        })
+        .join("")}
+    </div>
     <details class="compact-details"><summary>為替換算の注意</summary><p>${mission.note}</p></details>`
   );
 };
