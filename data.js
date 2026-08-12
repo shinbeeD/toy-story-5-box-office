@@ -1,13 +1,13 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-08-12 06:41 JST",
-  "dataThrough": "2026-08-10",
-  "headline": "世界累計 $1095.57M、$1Bまであと$-95.57M。日本は10日50億チャレンジへ",
+  "updatedAt": "2026-08-13 06:40 JST",
+  "dataThrough": "2026-08-11",
+  "headline": "世界累計 $1096.41M、$1Bまであと$-96.41M。日本は10日50億チャレンジへ",
   "summary": {
-    "worldwide": 1095.573853,
-    "domestic": 471.305989,
+    "worldwide": 1096.406779,
+    "domestic": 472.138915,
     "international": 624.267864,
-    "latestDaily": 0.606977,
-    "worldDelta": 0.606977,
+    "latestDaily": 0.832926,
+    "worldDelta": 0.832926,
     "billionProgress": 109.6,
     "sourceStatus": "TN"
   },
@@ -20,76 +20,54 @@ window.BOX_OFFICE_DATA = {
     "sourceStatus": "CALC"
   },
   "japanFlash": {
-    "date": "2026/08/11",
-    "updatedAt": "2026/08/11 最終",
-    "rank": 3,
-    "trackedSales": 91943,
-    "seats": 171323,
+    "date": "2026/08/12",
+    "updatedAt": "2026/08/12 最終",
+    "rank": 2,
+    "trackedSales": 98395,
+    "seats": 175597,
     "seatProgress": 98.1,
     "nextDayTrackedTheaters": 257,
     "nextDayAllTheaters": 387,
-    "referenceCoverage": 65.7,
+    "referenceCoverage": 65.2,
     "grossEstimateYen": {
-      "low": 1.63,
-      "base": 1.72,
-      "high": 1.84,
+      "low": 1.59,
+      "base": 1.71,
+      "high": 1.85,
       "sourceStatus": "CALC"
     },
     "status": "Box Office Mojoの日本累計と、興行収入を見守りたい！の当日販売速報を併記。",
     "method": "P値を全国動員そのものとは扱わず、公式3日間興収24.151億円に合わせた補正係数と曜日補正で興収換算した当日推定値。公式累計とは別扱いです。",
     "snapshotTime": "最終",
-    "showings": 1095,
-    "theaters": 250,
-    "weekRatio": 163.4,
+    "showings": 1126,
+    "theaters": 265,
+    "weekRatio": 123.9,
     "sourceScope": "独立系含む",
     "progressFactor": 1,
-    "seatOccupancy": 53.7,
+    "seatOccupancy": 56,
     "dailyEstimateYen": {
-      "low": 1.63,
-      "base": 1.72,
-      "high": 1.84,
+      "low": 1.59,
+      "base": 1.71,
+      "high": 1.85,
       "sourceStatus": "CALC"
     },
-    "estimatedFullDaySales": 91943,
-    "estimatedAllMarketSales": 91943,
+    "estimatedFullDaySales": 98395,
+    "estimatedAllMarketSales": 98395,
     "seatPlan": {
-      "date": "2026/08/13",
-      "seats": 174324,
-      "showings": 1115,
-      "trackedTheaters": 251,
+      "date": "2026/08/14",
+      "seats": 222767,
+      "showings": 1129,
+      "trackedTheaters": 249,
       "allTheaters": 382,
-      "coverage": 65.7
+      "coverage": 65.2
     },
     "officialGrossUsd": 65.76,
     "currentEstimateYen": {
-      "low": 1.63,
-      "base": 1.72,
-      "high": 1.84,
+      "low": 1.59,
+      "base": 1.71,
+      "high": 1.85,
       "sourceStatus": "CALC"
     },
     "dailyTrend": [
-      {
-        "date": "2026/08/05",
-        "snapshotTime": "最終",
-        "sourceScope": "独立系含む",
-        "rank": 3,
-        "trackedSales": 79414,
-        "seats": 284657,
-        "seatOccupancy": 27.9,
-        "estimatedFullDaySales": 79414,
-        "estimatedGrossYen": {
-          "low": 1.28,
-          "base": 1.38,
-          "high": 1.49
-        },
-        "sourceStatus": "CALC",
-        "calibration": "水曜サービスデー補正",
-        "yenPerTrackedPoint": 1868,
-        "weekdayFactor": 0.93,
-        "coverage": 65.7,
-        "progressFactor": 1,
-        "status": "最終販売速報"
-      },
       {
         "date": "2026/08/06",
         "snapshotTime": "最終",
@@ -108,7 +86,7 @@ window.BOX_OFFICE_DATA = {
         "calibration": "公式3日間補正係数ベース",
         "yenPerTrackedPoint": 1868,
         "weekdayFactor": 1,
-        "coverage": 65.7,
+        "coverage": 65.2,
         "progressFactor": 1,
         "status": "最終販売速報"
       },
@@ -130,7 +108,7 @@ window.BOX_OFFICE_DATA = {
         "calibration": "公式3日間補正係数ベース",
         "yenPerTrackedPoint": 1868,
         "weekdayFactor": 1,
-        "coverage": 65.7,
+        "coverage": 65.2,
         "progressFactor": 1,
         "status": "最終販売速報"
       },
@@ -152,7 +130,7 @@ window.BOX_OFFICE_DATA = {
         "calibration": "公式3日間補正係数ベース",
         "yenPerTrackedPoint": 1868,
         "weekdayFactor": 1,
-        "coverage": 65.7,
+        "coverage": 65.2,
         "progressFactor": 1,
         "status": "最終販売速報"
       },
@@ -174,7 +152,7 @@ window.BOX_OFFICE_DATA = {
         "calibration": "公式3日間補正係数ベース",
         "yenPerTrackedPoint": 1868,
         "weekdayFactor": 1,
-        "coverage": 65.7,
+        "coverage": 65.2,
         "progressFactor": 1,
         "status": "最終販売速報"
       },
@@ -196,7 +174,7 @@ window.BOX_OFFICE_DATA = {
         "calibration": "公式3日間補正係数ベース",
         "yenPerTrackedPoint": 1868,
         "weekdayFactor": 1,
-        "coverage": 65.7,
+        "coverage": 65.2,
         "progressFactor": 1,
         "status": "最終販売速報"
       },
@@ -218,15 +196,37 @@ window.BOX_OFFICE_DATA = {
         "calibration": "公式3日間補正係数ベース",
         "yenPerTrackedPoint": 1868,
         "weekdayFactor": 1,
-        "coverage": 65.7,
+        "coverage": 65.2,
+        "progressFactor": 1,
+        "status": "最終販売速報"
+      },
+      {
+        "date": "2026/08/12",
+        "snapshotTime": "最終",
+        "sourceScope": "独立系含む",
+        "rank": 2,
+        "trackedSales": 98395,
+        "seats": 175597,
+        "seatOccupancy": 56,
+        "estimatedFullDaySales": 98395,
+        "estimatedGrossYen": {
+          "low": 1.59,
+          "base": 1.71,
+          "high": 1.85
+        },
+        "sourceStatus": "CALC",
+        "calibration": "水曜サービスデー補正",
+        "yenPerTrackedPoint": 1868,
+        "weekdayFactor": 0.93,
+        "coverage": 65.2,
         "progressFactor": 1,
         "status": "最終販売速報"
       }
     ],
     "sourceStatus": "TRACKING",
     "yenPerTrackedPoint": 1868,
-    "weekdayFactor": 1,
-    "calibration": "公式3日間補正係数ベース",
+    "weekdayFactor": 0.93,
+    "calibration": "水曜サービスデー補正",
     "officialOpening": {
       "grossYenBillion": 24.151,
       "admissionsMillion": 1.64,
@@ -377,16 +377,6 @@ window.BOX_OFFICE_DATA = {
   ],
   "worldwideTrend": [
     {
-      "date": "8/2",
-      "label": "最新公表",
-      "domestic": 462.164629,
-      "international": 604.872924,
-      "worldwide": 1067.037553,
-      "increase": 34.633841,
-      "status": "The Numbers更新値",
-      "latest": false
-    },
-    {
       "date": "8/3",
       "label": "最新公表",
       "domestic": 463.356736,
@@ -454,17 +444,20 @@ window.BOX_OFFICE_DATA = {
       "worldwide": 1095.573853,
       "increase": 0.606977,
       "status": "The Numbers更新値",
+      "latest": false
+    },
+    {
+      "date": "8/11",
+      "label": "最新公表",
+      "domestic": 472.138915,
+      "international": 624.267864,
+      "worldwide": 1096.406779,
+      "increase": 0.832926,
+      "status": "The Numbers更新値",
       "latest": true
     }
   ],
   "daily": [
-    {
-      "date": "8/4",
-      "gross": 1.289041,
-      "dod": 8,
-      "wow": -45,
-      "cumulative": 464.645777
-    },
     {
       "date": "8/5",
       "gross": 1.031993,
@@ -506,6 +499,13 @@ window.BOX_OFFICE_DATA = {
       "dod": -53,
       "wow": -49,
       "cumulative": 471.305989
+    },
+    {
+      "date": "8/11",
+      "gross": 0.832926,
+      "dod": 37,
+      "wow": -35,
+      "cumulative": 472.138915
     }
   ],
   "weekends": [
@@ -534,14 +534,14 @@ window.BOX_OFFICE_DATA = {
   "comparisons": [
     {
       "title": "インサイド・ヘッド2",
-      "cumulative": 628.069739,
-      "difference": 156.76375,
+      "cumulative": 629.497664,
+      "difference": 157.358749,
       "index": 133.3,
       "rank": 1
     },
     {
       "title": "トイ・ストーリー5",
-      "cumulative": 471.305989,
+      "cumulative": 472.138915,
       "difference": 0,
       "index": 100,
       "current": true,
@@ -549,23 +549,23 @@ window.BOX_OFFICE_DATA = {
     },
     {
       "title": "アナと雪の女王2",
-      "cumulative": 459.867105,
-      "difference": -11.438884,
-      "index": 97.6,
+      "cumulative": 460.465624,
+      "difference": -11.673291,
+      "index": 97.5,
       "rank": 3
     },
     {
       "title": "トイ・ストーリー4",
-      "cumulative": 420.332009,
-      "difference": -50.97398,
+      "cumulative": 421.276037,
+      "difference": -50.862878,
       "index": 89.2,
       "rank": 4
     },
     {
       "title": "ズートピア2",
-      "cumulative": 387.010053,
-      "difference": -84.295936,
-      "index": 82.1,
+      "cumulative": 390.413294,
+      "difference": -81.725621,
+      "index": 82.7,
       "rank": 5
     }
   ],
@@ -937,13 +937,13 @@ window.BOX_OFFICE_DATA = {
   "checks": [
     {
       "metric": "北米累計",
-      "adopted": 471.305989,
+      "adopted": 472.138915,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
-      "alternate": 470.699012,
+      "alternate": 471.305989,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
-      "difference": 0.606977,
+      "difference": 0.832926,
       "differenceUnit": "USD million",
       "note": "The Numbersを採用。Box Office Mojoとの差は更新時刻差として記録。"
     },
@@ -961,19 +961,19 @@ window.BOX_OFFICE_DATA = {
     },
     {
       "metric": "世界累計",
-      "adopted": 1095.573853,
+      "adopted": 1096.406779,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
-      "alternate": 1094.967012,
+      "alternate": 1095.573989,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
-      "difference": 0.606841,
+      "difference": 0.83279,
       "differenceUnit": "USD million",
       "note": "The Numbersを採用。BOMとの差は主に更新時刻差。BOMは国別確認に使用。"
     },
     {
-      "metric": "8/10北米日次",
-      "adopted": 0.606977,
+      "metric": "8/11北米日次",
+      "adopted": 0.832926,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
       "alternate": null,
@@ -991,10 +991,10 @@ window.BOX_OFFICE_DATA = {
     },
     {
       "metric": "日本当日P値推定",
-      "adopted": 1.72,
+      "adopted": 1.71,
       "adoptedUnit": "JPY billion",
       "adoptedSourceStatus": "CALC",
-      "alternate": 91943,
+      "alternate": 98395,
       "alternateUnit": "P",
       "alternateSourceStatus": "TRACKING",
       "difference": null,
@@ -1002,11 +1002,11 @@ window.BOX_OFFICE_DATA = {
     }
   ],
   "insights": [
-    "公開53日目の北米累計は$471.31M。同日比較では5作品中2位。",
+    "公開54日目の北米累計は$472.14M。同日比較では5作品中2位。",
     "第8週末は$4.22Mで前週比38.0%減。祝日週末後の平日推移を注視。",
-    "8/10の日次興収は$0.61M、前週同曜日比49.0%減。競合ファミリー作品の流入下でも累計は着実に上積み。",
-    "海外累計は$624.27M、世界比57.0%。日本累計$65.76Mの反映で海外比率が上昇。",
-    "日本速報は2026/08/11 最終時点で販売91,943、当日推定興収は約1.72億円（独立系含む）。",
+    "8/11の日次興収は$0.83M、前週同曜日比35.0%減。競合ファミリー作品の流入下でも累計は着実に上積み。",
+    "海外累計は$624.27M、世界比56.9%。日本累計$65.76Mの反映で海外比率が上昇。",
+    "日本速報は2026/08/12 最終時点で販売98,395、当日推定興収は約1.71億円（独立系含む）。",
     "同日比較には公開曜日・祝日・上映館数・為替差があるため、順位だけでなく下落率と海外比率を合わせて見る。"
   ],
   "competition": {
@@ -1083,31 +1083,9 @@ window.BOX_OFFICE_DATA = {
       "url": "https://apnews.com/"
     }
   ],
-  "dayMatchedDay": 53,
+  "dayMatchedDay": 54,
   "weekendMatchedWeek": 8,
   "japanDailyTrend": [
-    {
-      "date": "2026/08/05",
-      "snapshotTime": "最終",
-      "sourceScope": "独立系含む",
-      "rank": 3,
-      "trackedSales": 79414,
-      "seats": 284657,
-      "seatOccupancy": 27.9,
-      "estimatedFullDaySales": 79414,
-      "estimatedGrossYen": {
-        "low": 1.28,
-        "base": 1.38,
-        "high": 1.49
-      },
-      "sourceStatus": "CALC",
-      "calibration": "水曜サービスデー補正",
-      "yenPerTrackedPoint": 1868,
-      "weekdayFactor": 0.93,
-      "coverage": 65.7,
-      "progressFactor": 1,
-      "status": "最終販売速報"
-    },
     {
       "date": "2026/08/06",
       "snapshotTime": "最終",
@@ -1126,7 +1104,7 @@ window.BOX_OFFICE_DATA = {
       "calibration": "公式3日間補正係数ベース",
       "yenPerTrackedPoint": 1868,
       "weekdayFactor": 1,
-      "coverage": 65.7,
+      "coverage": 65.2,
       "progressFactor": 1,
       "status": "最終販売速報"
     },
@@ -1148,7 +1126,7 @@ window.BOX_OFFICE_DATA = {
       "calibration": "公式3日間補正係数ベース",
       "yenPerTrackedPoint": 1868,
       "weekdayFactor": 1,
-      "coverage": 65.7,
+      "coverage": 65.2,
       "progressFactor": 1,
       "status": "最終販売速報"
     },
@@ -1170,7 +1148,7 @@ window.BOX_OFFICE_DATA = {
       "calibration": "公式3日間補正係数ベース",
       "yenPerTrackedPoint": 1868,
       "weekdayFactor": 1,
-      "coverage": 65.7,
+      "coverage": 65.2,
       "progressFactor": 1,
       "status": "最終販売速報"
     },
@@ -1192,7 +1170,7 @@ window.BOX_OFFICE_DATA = {
       "calibration": "公式3日間補正係数ベース",
       "yenPerTrackedPoint": 1868,
       "weekdayFactor": 1,
-      "coverage": 65.7,
+      "coverage": 65.2,
       "progressFactor": 1,
       "status": "最終販売速報"
     },
@@ -1214,7 +1192,7 @@ window.BOX_OFFICE_DATA = {
       "calibration": "公式3日間補正係数ベース",
       "yenPerTrackedPoint": 1868,
       "weekdayFactor": 1,
-      "coverage": 65.7,
+      "coverage": 65.2,
       "progressFactor": 1,
       "status": "最終販売速報"
     },
@@ -1236,12 +1214,34 @@ window.BOX_OFFICE_DATA = {
       "calibration": "公式3日間補正係数ベース",
       "yenPerTrackedPoint": 1868,
       "weekdayFactor": 1,
-      "coverage": 65.7,
+      "coverage": 65.2,
+      "progressFactor": 1,
+      "status": "最終販売速報"
+    },
+    {
+      "date": "2026/08/12",
+      "snapshotTime": "最終",
+      "sourceScope": "独立系含む",
+      "rank": 2,
+      "trackedSales": 98395,
+      "seats": 175597,
+      "seatOccupancy": 56,
+      "estimatedFullDaySales": 98395,
+      "estimatedGrossYen": {
+        "low": 1.59,
+        "base": 1.71,
+        "high": 1.85
+      },
+      "sourceStatus": "CALC",
+      "calibration": "水曜サービスデー補正",
+      "yenPerTrackedPoint": 1868,
+      "weekdayFactor": 0.93,
+      "coverage": 65.2,
       "progressFactor": 1,
       "status": "最終販売速報"
     }
   ],
-  "worldDataThrough": "2026-08-10",
+  "worldDataThrough": "2026-08-11",
   "sourceStatusLegend": [
     {
       "code": "OFFICIAL",
@@ -1595,6 +1595,6 @@ window.BOX_OFFICE_DATA = {
     },
     "note": "公式3日間興収24.151億円にP値推定を合わせるための補正係数。P値は全国動員そのものではなく販売数指標として扱う。"
   },
-  "japanFlashDate": "2026/08/11",
-  "japanTrackingUpdatedAt": "2026-08-12 06:41 JST"
+  "japanFlashDate": "2026/08/12",
+  "japanTrackingUpdatedAt": "2026-08-13 06:40 JST"
 };
