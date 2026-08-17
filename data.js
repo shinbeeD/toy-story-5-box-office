@@ -1,13 +1,13 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-08-17 06:15 JST",
+  "updatedAt": "2026-08-18 06:21 JST",
   "dataThrough": "2026-08-16",
-  "headline": "世界累計 $1114.77M、$1Bまであと$-114.77M。日本は10日50億チャレンジへ",
+  "headline": "世界累計 $1115.21M、$1Bまであと$-115.21M。日本は10日50億チャレンジへ",
   "summary": {
-    "worldwide": 1114.768651,
+    "worldwide": 1115.214111,
     "domestic": 475.468651,
-    "international": 639.3,
+    "international": 639.74546,
     "latestDaily": 0.7,
-    "worldDelta": 16.732136,
+    "worldDelta": 17.177596,
     "billionProgress": 111.5,
     "sourceStatus": "TN"
   },
@@ -35,7 +35,7 @@ window.BOX_OFFICE_DATA = {
       "high": 1.56,
       "sourceStatus": "CALC"
     },
-    "status": "Box Office Mojoの日本累計と、興行収入を見守りたい！の当日販売速報を併記。",
+    "status": "Box Office Mojoで日本累計が公式反映。販売速報は前回値として保持。",
     "method": "P値を全国動員そのものとは扱わず、公式3日間興収24.151億円に合わせた補正係数と曜日補正で興収換算した当日推定値。公式累計とは別扱いです。",
     "snapshotTime": "最終",
     "showings": 1199,
@@ -450,9 +450,9 @@ window.BOX_OFFICE_DATA = {
       "date": "8/16",
       "label": "最新公表",
       "domestic": 475.468651,
-      "international": 639.3,
-      "worldwide": 1114.768651,
-      "increase": 16.732136,
+      "international": 639.74546,
+      "worldwide": 1115.214111,
+      "increase": 17.177596,
       "status": "The Numbers更新値",
       "latest": true
     }
@@ -616,9 +616,9 @@ window.BOX_OFFICE_DATA = {
     {
       "name": "英国",
       "flag": "🇬🇧",
-      "gross": 71.668,
-      "growth": 51.356,
-      "share": 6.4,
+      "gross": 72.998,
+      "growth": 52.686,
+      "share": 6.5,
       "sourceStatus": "BOM",
       "unit": "USD million",
       "status": "公開中"
@@ -949,25 +949,25 @@ window.BOX_OFFICE_DATA = {
     },
     {
       "metric": "海外累計",
-      "adopted": 639.3,
+      "adopted": 639.74546,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
       "alternate": 639.3,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
-      "difference": 0,
+      "difference": 0.44546,
       "differenceUnit": "USD million",
       "note": "The Numbersを採用。国別内訳はBox Office Mojoで補強。"
     },
     {
       "metric": "世界累計",
-      "adopted": 1114.768651,
+      "adopted": 1115.214111,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
       "alternate": 1114.768651,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
-      "difference": 0,
+      "difference": 0.44546,
       "differenceUnit": "USD million",
       "note": "The Numbersを採用。BOMとの差は主に更新時刻差。BOMは国別確認に使用。"
     },
@@ -1005,7 +1005,7 @@ window.BOX_OFFICE_DATA = {
     "公開59日目の北米累計は$475.47M。同日比較では5作品中2位。",
     "第9週末は$2.30Mで前週比45.0%減。祝日週末後の平日推移を注視。",
     "8/16の日次興収は$0.70M、前週同曜日比46.0%減。競合ファミリー作品の流入下でも累計は着実に上積み。",
-    "海外累計は$639.30M、世界比57.3%。日本累計$65.76Mの反映で海外比率が上昇。",
+    "海外累計は$639.75M、世界比57.4%。日本累計$65.76Mの反映で海外比率が上昇。",
     "日本速報は2026/08/16 最終時点で販売77,941、当日推定興収は約1.46億円（独立系含む）。",
     "同日比較には公開曜日・祝日・上映館数・為替差があるため、順位だけでなく下落率と海外比率を合わせて見る。"
   ],
