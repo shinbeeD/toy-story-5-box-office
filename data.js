@@ -1,13 +1,13 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-10-02 09:28 JST",
-  "dataThrough": "2026-09-30",
-  "headline": "世界累計 $1147.46M、$1Bまであと$-147.46M。日本は10日50億チャレンジへ",
+  "updatedAt": "2026-10-03 09:06 JST",
+  "dataThrough": "2026-10-01",
+  "headline": "世界累計 $1147.47M、$1Bまであと$-147.47M。日本は10日50億チャレンジへ",
   "summary": {
-    "worldwide": 1147.462214,
-    "domestic": 480.29118,
+    "worldwide": 1147.465495,
+    "domestic": 480.294461,
     "international": 667.171034,
-    "latestDaily": 0.001375,
-    "worldDelta": 0.002202,
+    "latestDaily": 0.003281,
+    "worldDelta": 0.003281,
     "billionProgress": 114.7,
     "sourceStatus": "TN"
   },
@@ -377,16 +377,6 @@ window.BOX_OFFICE_DATA = {
   ],
   "worldwideTrend": [
     {
-      "date": "9/21",
-      "label": "最新公表",
-      "domestic": 480.257597,
-      "international": 664.275171,
-      "worldwide": 1144.532768,
-      "increase": 0.001955,
-      "status": "The Numbers更新値",
-      "latest": false
-    },
-    {
       "date": "9/22",
       "label": "最新公表",
       "domestic": 480.260398,
@@ -454,17 +444,20 @@ window.BOX_OFFICE_DATA = {
       "worldwide": 1147.462214,
       "increase": 0.002202,
       "status": "The Numbers更新値",
+      "latest": false
+    },
+    {
+      "date": "10/1",
+      "label": "最新公表",
+      "domestic": 480.294461,
+      "international": 667.171034,
+      "worldwide": 1147.465495,
+      "increase": 0.003281,
+      "status": "The Numbers更新値",
       "latest": true
     }
   ],
   "daily": [
-    {
-      "date": "9/24",
-      "gross": 0.000972,
-      "dod": -55,
-      "wow": -67,
-      "cumulative": 480.263548
-    },
     {
       "date": "9/25",
       "gross": 0.006091,
@@ -506,6 +499,13 @@ window.BOX_OFFICE_DATA = {
       "dod": 66,
       "wow": -37,
       "cumulative": 480.29118
+    },
+    {
+      "date": "10/1",
+      "gross": 0.003281,
+      "dod": 139,
+      "wow": 238,
+      "cumulative": 480.294461
     }
   ],
   "weekends": [
@@ -534,14 +534,14 @@ window.BOX_OFFICE_DATA = {
   "comparisons": [
     {
       "title": "インサイド・ヘッド2",
-      "cumulative": 652.903689,
-      "difference": 172.612509,
+      "cumulative": 652.910491,
+      "difference": 172.61603,
       "index": 135.9,
       "rank": 1
     },
     {
       "title": "トイ・ストーリー5",
-      "cumulative": 480.29118,
+      "cumulative": 480.294461,
       "difference": 0,
       "index": 100,
       "current": true,
@@ -549,22 +549,22 @@ window.BOX_OFFICE_DATA = {
     },
     {
       "title": "アナと雪の女王2",
-      "cumulative": 477.103922,
-      "difference": -3.187258,
+      "cumulative": 477.12838,
+      "difference": -3.166081,
       "index": 99.3,
       "rank": 3
     },
     {
       "title": "トイ・ストーリー4",
-      "cumulative": 433.073187,
-      "difference": -47.217993,
+      "cumulative": 433.083004,
+      "difference": -47.211457,
       "index": 90.2,
       "rank": 4
     },
     {
       "title": "ズートピア2",
-      "cumulative": 427.340319,
-      "difference": -52.950861,
+      "cumulative": 427.401964,
+      "difference": -52.892497,
       "index": 89,
       "rank": 5
     }
@@ -937,10 +937,10 @@ window.BOX_OFFICE_DATA = {
   "checks": [
     {
       "metric": "北米累計",
-      "adopted": 480.29118,
+      "adopted": 480.294461,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
-      "alternate": 480.29118,
+      "alternate": 480.294461,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
       "difference": 0,
@@ -961,10 +961,10 @@ window.BOX_OFFICE_DATA = {
     },
     {
       "metric": "世界累計",
-      "adopted": 1147.462214,
+      "adopted": 1147.465495,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
-      "alternate": 1147.46218,
+      "alternate": 1147.465461,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
       "difference": 0.000034,
@@ -972,8 +972,8 @@ window.BOX_OFFICE_DATA = {
       "note": "The Numbersを採用。BOMとの差は主に更新時刻差。BOMは国別確認に使用。"
     },
     {
-      "metric": "9/30北米日次",
-      "adopted": 0.001375,
+      "metric": "10/1北米日次",
+      "adopted": 0.003281,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
       "alternate": null,
@@ -1002,9 +1002,9 @@ window.BOX_OFFICE_DATA = {
     }
   ],
   "insights": [
-    "公開104日目の北米累計は$480.29M。同日比較では5作品中2位。",
+    "公開105日目の北米累計は$480.29M。同日比較では5作品中2位。",
     "第15週末は$0.02Mで前週比47.0%減。祝日週末後の平日推移を注視。",
-    "9/30の日次興収は$0.00M、前週同曜日比37.0%減。競合ファミリー作品の流入下でも累計は着実に上積み。",
+    "10/1の日次興収は$0.00M、前週同曜日比238.0%減。競合ファミリー作品の流入下でも累計は着実に上積み。",
     "海外累計は$667.17M、世界比58.1%。日本累計$14.56Mの反映で海外比率が上昇。",
     "日本速報は2026/10/01 最終時点で販売2,562、当日推定興収は約0.05億円（独立系含む）。",
     "同日比較には公開曜日・祝日・上映館数・為替差があるため、順位だけでなく下落率と海外比率を合わせて見る。"
@@ -1083,7 +1083,7 @@ window.BOX_OFFICE_DATA = {
       "url": "https://apnews.com/"
     }
   ],
-  "dayMatchedDay": 104,
+  "dayMatchedDay": 105,
   "weekendMatchedWeek": 15,
   "japanDailyTrend": [
     {
@@ -1241,7 +1241,7 @@ window.BOX_OFFICE_DATA = {
       "status": "最終販売速報"
     }
   ],
-  "worldDataThrough": "2026-09-30",
+  "worldDataThrough": "2026-10-01",
   "sourceStatusLegend": [
     {
       "code": "OFFICIAL",
@@ -1596,5 +1596,5 @@ window.BOX_OFFICE_DATA = {
     "note": "公式3日間興収24.151億円にP値推定を合わせるための補正係数。P値は全国動員そのものではなく販売数指標として扱う。"
   },
   "japanFlashDate": "2026/10/01",
-  "japanTrackingUpdatedAt": "2026-10-02 09:28 JST"
+  "japanTrackingUpdatedAt": "2026-10-03 09:06 JST"
 };
