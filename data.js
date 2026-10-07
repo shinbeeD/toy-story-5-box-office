@@ -1,5 +1,5 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-10-06 10:38 JST",
+  "updatedAt": "2026-10-07 09:19 JST",
   "dataThrough": "2026-10-01",
   "headline": "世界累計 $1148.03M、$1Bまであと$-148.03M。日本は10日50億チャレンジへ",
   "summary": {
@@ -35,7 +35,7 @@ window.BOX_OFFICE_DATA = {
       "high": 0.01,
       "sourceStatus": "CALC"
     },
-    "status": "Box Office Mojoの日本累計と、興行収入を見守りたい！の当日販売速報を併記。",
+    "status": "Box Office Mojoで日本累計が公式反映。販売速報は前回値として保持。",
     "method": "P値を全国動員そのものとは扱わず、公式3日間興収24.151億円に合わせた補正係数と曜日補正で興収換算した当日推定値。公式累計とは別扱いです。",
     "snapshotTime": "19:00",
     "showings": 55,
