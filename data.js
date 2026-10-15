@@ -1,5 +1,5 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-10-15 08:37 JST",
+  "updatedAt": "2026-10-16 08:31 JST",
   "dataThrough": "2026-10-01",
   "headline": "世界累計 $1148.43M、$1Bまであと$-148.43M。日本は10日50億チャレンジへ",
   "summary": {
@@ -948,10 +948,10 @@ window.BOX_OFFICE_DATA = {
       "adopted": 668.131348,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
-      "alternate": 667.738,
+      "alternate": 668.131348,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
-      "difference": 0.393348,
+      "difference": 0,
       "differenceUnit": "USD million",
       "note": "The Numbersを採用。国別内訳はBox Office Mojoで補強。"
     },
@@ -960,10 +960,10 @@ window.BOX_OFFICE_DATA = {
       "adopted": 1148.425809,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
-      "alternate": 1148.032461,
+      "alternate": 1148.425809,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
-      "difference": 0.393348,
+      "difference": 0,
       "differenceUnit": "USD million",
       "note": "The Numbersを採用。BOMとの差は主に更新時刻差。BOMは国別確認に使用。"
     },
