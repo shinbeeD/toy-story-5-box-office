@@ -1,5 +1,5 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-10-27 09:12 JST",
+  "updatedAt": "2026-10-29 09:34 JST",
   "dataThrough": "2026-10-01",
   "headline": "世界累計 $1149.14M、$1Bまであと$-149.14M。日本は10日50億チャレンジへ",
   "summary": {
