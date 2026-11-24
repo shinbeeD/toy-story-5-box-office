@@ -1,13 +1,13 @@
 window.BOX_OFFICE_DATA = {
-  "updatedAt": "2026-11-23 10:21 JST",
+  "updatedAt": "2026-11-24 14:06 JST",
   "dataThrough": "2026-10-01",
-  "headline": "世界累計 $1149.55M、$1Bまであと$-149.55M。日本は10日50億チャレンジへ",
+  "headline": "世界累計 $1149.68M、$1Bまであと$-149.68M。日本は10日50億チャレンジへ",
   "summary": {
-    "worldwide": 1149.545392,
+    "worldwide": 1149.682008,
     "domestic": 480.294461,
-    "international": 669.250931,
+    "international": 669.387547,
     "latestDaily": 0.003281,
-    "worldDelta": 2.083178,
+    "worldDelta": 2.219794,
     "billionProgress": 115,
     "sourceStatus": "TN"
   },
@@ -446,9 +446,9 @@ window.BOX_OFFICE_DATA = {
       "date": "10/1",
       "label": "最新公表",
       "domestic": 480.294461,
-      "international": 669.250931,
-      "worldwide": 1149.545392,
-      "increase": 2.083178,
+      "international": 669.387547,
+      "worldwide": 1149.682008,
+      "increase": 2.219794,
       "status": "The Numbers更新値",
       "latest": true
     }
@@ -945,10 +945,10 @@ window.BOX_OFFICE_DATA = {
     },
     {
       "metric": "海外累計",
-      "adopted": 669.250931,
+      "adopted": 669.387547,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
-      "alternate": 669.250931,
+      "alternate": 669.387547,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
       "difference": 0,
@@ -957,10 +957,10 @@ window.BOX_OFFICE_DATA = {
     },
     {
       "metric": "世界累計",
-      "adopted": 1149.545392,
+      "adopted": 1149.682008,
       "adoptedUnit": "USD million",
       "adoptedSourceStatus": "TN",
-      "alternate": 1149.545392,
+      "alternate": 1149.682008,
       "alternateUnit": "USD million",
       "alternateSourceStatus": "BOM",
       "difference": 0,
@@ -1001,7 +1001,7 @@ window.BOX_OFFICE_DATA = {
     "公開105日目の北米累計は$480.29M。同日比較では5作品中2位。",
     "第15週末は$0.02Mで前週比47.0%減。祝日週末後の平日推移を注視。",
     "10/1の日次興収は$0.00M、前週同曜日比238.0%減。競合ファミリー作品の流入下でも累計は着実に上積み。",
-    "海外累計は$669.25M、世界比58.2%。日本累計$14.56Mの反映で海外比率が上昇。",
+    "海外累計は$669.39M、世界比58.2%。日本累計$14.56Mの反映で海外比率が上昇。",
     "日本速報は2026/10/05 19:00時点で販売664、当日推定興収は約0.01億円（独立系含む）。",
     "同日比較には公開曜日・祝日・上映館数・為替差があるため、順位だけでなく下落率と海外比率を合わせて見る。"
   ],
